@@ -1,0 +1,146 @@
+{
+  "unknown": {
+    "wins": 0,
+    "losses": 49,
+    "total_staked": 1231.0098229999999,
+    "total_proceeds": 0.0,
+    "_trust": "legacy_contaminated",
+    "_trust_note": "49 losses attributed before trader field was added to BUY logs. Cannot be attributed to specific traders. $1,231 staked, $0 proceeds. Does NOT affect live trading (edge_factor is per-trader, not aggregate). Do not use for bench or sizing decisions."
+  },
+  "MultiSport-8f80": {
+    "wins": 1,
+    "losses": 11,
+    "total_staked": 34.01,
+    "total_proceeds": 0.0,
+    "_trust": "partially_reconstructed",
+    "_trust_note": "Quarantined v7.6.0 recon (no CLAIM in trade_log). Data unreliable."
+  },
+  "GEM-0x69aee": {
+    "wins": 57,
+    "losses": 4,
+    "total_staked": 391.3,
+    "total_proceeds": 456.0,
+    "_trust": "partially_reconstructed",
+    "_trust_note": "W/L correct (57W/4L confirmed). total_staked corrected: phantom loop (Flyers 208x+Kartal 113x) stake subtracted. total_proceeds systematically underestimated: many CLOB-path wins recorded $0 due to delayed-SELL blindness (status:delayed, no takingAmount). True ROI better than shown."
+  },
+  "Signal47-Bets": {
+    "wins": 54,
+    "losses": 1,
+    "total_staked": 813.36,
+    "total_proceeds": 1378.5,
+    "_trust": "clean",
+    "_trust_note": "Uncontaminated."
+  },
+  "Immense-Gokart": {
+    "wins": 53,
+    "losses": 0,
+    "total_staked": 661.0,
+    "total_proceeds": 1017.6,
+    "_trust": "clean",
+    "_trust_note": "Uncontaminated. Phantom losses removed v7.6.7 repair."
+  },
+  "CS2-LoL-Sharp": {
+    "wins": 0,
+    "losses": 5,
+    "total_staked": 17.05,
+    "total_proceeds": 0.0,
+    "_trust": "legacy_contaminated",
+    "_trust_note": "Removed trader. Small spurious loss count from near-zero hits. Irrelevant."
+  },
+  "Triangular-Box": {
+    "wins": 198,
+    "losses": 3,
+    "total_staked": 2025.0600000000002,
+    "total_proceeds": 3001.7112589999997,
+    "_trust": "clean",
+    "_trust_note": "Uncontaminated. hold-to-resolution trader. Proceeds from CTF/NegRisk path."
+  },
+  "Unwieldy-Forage": {
+    "wins": 159,
+    "losses": 8,
+    "total_staked": 1712.87,
+    "total_proceeds": 3334.934,
+    "_trust": "clean",
+    "_trust_note": "Uncontaminated. Proceeds from CTF/NegRisk path."
+  },
+  "Helpful-Contention": {
+    "wins": 139,
+    "losses": 4,
+    "total_staked": 1434.0,
+    "total_proceeds": 4877.0,
+    "_trust": "clean",
+    "_trust_note": "Benched (crypto hard-ban). Historical data uncontaminated."
+  },
+  "Superb-Hyacinth": {
+    "wins": 33,
+    "losses": 0,
+    "total_staked": 330.0,
+    "total_proceeds": 626.0,
+    "_trust": "clean",
+    "_trust_note": "Uncontaminated. Activated v7.5.9, 33W/0L as of MEMORY.md."
+  },
+  "SharpEdge-25a1": {
+    "wins": 3,
+    "losses": 0,
+    "total_staked": 32.34,
+    "total_proceeds": 98.244281,
+    "_trust": "partially_reconstructed",
+    "_trust_note": "0 resolved positions yet. No history to trust or distrust."
+  },
+  "kkap8897": {
+    "wins": 1,
+    "losses": 4,
+    "total_staked": 46.93,
+    "total_proceeds": 0.0,
+    "_trust": "clean",
+    "_trust_note": "Benched dud. Historical data uncontaminated."
+  },
+  "Sharp-c33a": {
+    "wins": 7,
+    "losses": 2,
+    "total_staked": 160.74,
+    "total_proceeds": 94.7924,
+    "_trust": "partially_reconstructed",
+    "_trust_note": "W/L correct. Knicks CTF +$59.12 correction applied (edge_tracker had $0 for on-chain CTF at time of claim). CLOB dust sells ($0.71+$0.17) already captured. Heat_spread $30.71 CLOB sell captured at time. total_staked may include pre-v7.5.9 null-stake tracking gaps."
+  },
+  "Veteran-b512": {
+    "wins": 0,
+    "losses": 0,
+    "total_staked": 0.0,
+    "total_proceeds": 0.0,
+    "_trust": "clean",
+    "_trust_note": "Active. Small sample."
+  },
+  "recon-recovery": {
+    "wins": 12,
+    "losses": 0,
+    "total_staked": 196.256874,
+    "total_proceeds": 459.49325799999997,
+    "_trust": "clean",
+    "_trust_note": "No known contamination."
+  },
+  "RawrRawr": {
+    "wins": 3,
+    "losses": 1,
+    "total_staked": 129.97,
+    "total_proceeds": 26.7532,
+    "_trust": "partially_reconstructed",
+    "_trust_note": "Phantom losses removed v7.6.7 repair. proceeds may be underestimated (delayed-SELL blindness on CLOB path). Small sample (4 resolved)."
+  },
+  "HeisenbergWalt": {
+    "wins": 2,
+    "losses": 1,
+    "total_staked": 288.99,
+    "total_proceeds": 87.939411,
+    "_trust": "partially_reconstructed",
+    "_trust_note": "W=2/L=1 approximately correct. staked corrected (273x Sakkari phantom subtracted). proceeds may be underestimated (delayed-SELL blindness). Only 3 resolved - too small for bench decisions."
+  },
+  "0xc97f6383": {
+    "wins": 1,
+    "losses": 2,
+    "total_staked": 107.05,
+    "total_proceeds": 20.5594,
+    "_trust": "clean",
+    "_trust_note": "No known contamination."
+  }
+}

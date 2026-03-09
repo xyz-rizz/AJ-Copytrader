@@ -1,0 +1,38 @@
+# Secrets — never commit
+.env
+*.pem
+
+# Runtime state (ephemeral, machine-specific)
+bot.pid
+__pycache__/
+*.pyc
+
+# Large logs
+bot.log
+scanner.log
+deep_scan.log
+whale_scout.log
+deep_scan_test*.log
+scout_wide*.log
+scanner_v*.log
+
+# Backup files (keep git history clean)
+*.bak
+*.bak_*
+*.bak753
+*.bak754
+*.bak756*
+*.bak757
+*.bak758
+*.broken
+*.v7.*.bak
+
+# Scanner output (generated, not source)
+scanner_results.json
+deep_scan_*.json
+scout_wide*_results.json
+
+# Profile scripts (exploratory, not core)
+profile*.py
+check_timestamps.py
+scout_wide*.py

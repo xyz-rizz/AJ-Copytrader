@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """
-Polymarket Autonomous Copy-Trade Bot  v7.8.0
+Polymarket Autonomous Copy-Trade Bot  v7.8.1
 ==========================================
+v7.8.1 (2026-03-10) — Bench Superb-Hyacinth (zero signals in v7.7/v7.8 era):
+  Audit confirmed 0 copied buys in 5+ days. API empty for 0x419be42e. Priority 1→2.
+  Signal47/Triangular/Immense retained at priority=1 (proven edge, explainable dormancy).
+  No cap/stop/runtime changes. Backup: copytrade_bot.py.bak_pre781
+
 v7.8.0 (2026-03-10) — COPY_DELAY_SEC=0 (disable broken reactive delay):
   Architecture audit confirmed COPY_DELAY_SEC is reactive-only: execute_group fires
   only on new source activity, so any non-zero delay permanently suppresses
@@ -519,7 +524,7 @@ TRADERS = [
     {
         "name": "Superb-Hyacinth",
         "wallet": "0x419be42e6a9899d6ce2b443d17052a990b3f0944",
-        "roi": None, "priority": 1,  # v7.6.0: activated — 33W/0L confirmed in edge_scores, 76d age
+        "roi": None, "priority": 2,  # v7.8.1: BENCHED — 0 buys in v7.7/v7.8 era (5+ days, never copied) | was: priority=1 v7.6.0
         "archetype": "generalist",
         "bypass_global_block": True,    # v7.1: unrestricted
         "stake_mult": 0.5, "max_stake": 8.0,   # v7.7: survival mode cap | was: 15.0 v7.6.0

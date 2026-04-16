@@ -1,0 +1,17 @@
+{
+  "run_at": "2026-03-10T12:15:36.231064+00:00",
+  "monitor_checks": {
+    "chenpengzao": {
+      "reject": "too_young (13d)"
+    },
+    "SharpEdge-25a1": {
+      "reject": "micro (1.32 avg stake)"
+    },
+    "gem68-NBA": {
+      "reject": "high_entry (152.470)"
+    }
+  },
+  "total_candidates": 0,
+  "gems": [],
+  "rejection_counts": {}
+}

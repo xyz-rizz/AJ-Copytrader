@@ -1,0 +1,26 @@
+{
+  "ts": 1773302673.2871656,
+  "viable": [
+    {
+      "wallet": "0xd2ba1f7d1dbb0855489c0ac4a8a2a34a61c78761",
+      "resolved": 28,
+      "wins": 27,
+      "losses": 1,
+      "wr": 0.9642857142857143,
+      "avg_stake": 23.477498708333332,
+      "avg_entry": 0.27133267787282994,
+      "age_days": 52.106485493290755,
+      "last_buy_h": 0.13870739453368716,
+      "buys_24h": 2,
+      "total_buys": 24,
+      "total": 24,
+      "crypto_pct": 0.0,
+      "blocked_pct": 0.08333333333333333,
+      "sports_pct": 0.0,
+      "ud_pct": 0.0,
+      "tweet_pct": 0.0,
+      "weather_pct": 0.0
+    }
+  ],
+  "rejected": {}
+}

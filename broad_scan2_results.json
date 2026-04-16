@@ -1,0 +1,57 @@
+{
+  "run_at": "2026-03-10T12:23:29.428429+00:00",
+  "total_cids_seeded": 216,
+  "total_candidates_found": 552,
+  "total_scored_cap": 552,
+  "gems": [
+    {
+      "wallet": "0xafaf83a457ceb6d6778839f67038bd103708572d",
+      "score": 72.3,
+      "age_days": 20,
+      "resolved": 17,
+      "wins": 17,
+      "losses": 0,
+      "wr": 0.95,
+      "avg_stake": 15.96,
+      "avg_entry": 0.5,
+      "freq_day": 2.38,
+      "clusters": 0,
+      "blocked_pct": 0.0,
+      "sports_pct": 0.0,
+      "open_pos": 0,
+      "recent_buys_72h": 19,
+      "total_buys": 49,
+      "diversity": 36,
+      "last_seen": "03-10 11:51"
+    },
+    {
+      "wallet": "0x503f8098201ff4c9d5ec1f325b71a2f36a5fec57",
+      "score": 70.3,
+      "age_days": 56,
+      "resolved": 17,
+      "wins": 17,
+      "losses": 0,
+      "wr": 0.95,
+      "avg_stake": 10.08,
+      "avg_entry": 0.5,
+      "freq_day": 5.39,
+      "clusters": 0,
+      "blocked_pct": 0.099,
+      "sports_pct": 0.57,
+      "open_pos": 2,
+      "recent_buys_72h": 33,
+      "total_buys": 302,
+      "diversity": 102,
+      "last_seen": "03-10 12:13"
+    }
+  ],
+  "rejection_counts": {
+    "too_young": 444,
+    "blocked": 28,
+    "micro": 40,
+    "few_resolved": 17,
+    "no_activity": 12,
+    "stale": 3,
+    "clusters": 6
+  }
+}

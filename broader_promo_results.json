@@ -1,0 +1,37 @@
+{
+  "run_at": "2026-03-10T14:03:32.141498+00:00",
+  "total_scored": 1,
+  "a_strong": 0,
+  "b_probationary": 1,
+  "c_reject": 0,
+  "rejection_counts": {
+    "too_young": 189,
+    "low_wr": 27,
+    "few_resolved": 28
+  },
+  "results": [
+    {
+      "wallet": "0xb2a48372404e6a0bfb6c2f23d715d3acc5a8cf8a",
+      "source": "force:chenpengzao",
+      "edge_score": 238.3,
+      "copy_score": 78.6,
+      "bucket": "B_PROBATIONARY",
+      "wr": 91.7,
+      "wins": 11,
+      "losses": 1,
+      "resolved": 12,
+      "open": 4,
+      "age_days": 13.5,
+      "avg_stake": 1794.07,
+      "freq": 5.7,
+      "avg_entry": 0.571,
+      "sports_pct": 0.491,
+      "crypto_pct": 0.006,
+      "clusters": 1,
+      "blocked_pct": 0.187,
+      "hold_score": 0.0,
+      "recent_24h": 3,
+      "top_sport": "unknown"
+    }
+  ]
+}

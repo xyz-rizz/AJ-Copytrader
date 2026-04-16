@@ -1,7 +1,129 @@
 #!/usr/bin/env python3
 """
-Polymarket Autonomous Copy-Trade Bot  v7.8.1
+Polymarket Autonomous Copy-Trade Bot  v7.8.30
 ==========================================
+v7.8.30 (2026-03-20) — Crypto15m whitelist repair: bench 78c3 (MM confirmed), add 4 clean directional wallets
+  - BENCHED: CryptoUD15m-78c3 (0x78c3..) — live MM check: 8/26 conditionIds both-sides (30.8%), sell=28.3%. Phase2 WR was fake.
+  - BENCHED: e28f/bcd5/9bff/3123/397b all confirmed MM at runtime (prev batch). Remain priority=2.
+  - ADDED (priority=1): CryptoUD15m-b2a5 0xb2a5fce8.. mm=0/255(0%) avg_px=0.683 sell=0.0% BTC directional
+  - ADDED (priority=1): CryptoUD15m-639d 0x639df1ee.. mm=0/202(0%) avg_px=0.712 sell=0.0% BTC directional
+  - ADDED (priority=1): CryptoUD15m-5e62 0x5e62347c.. mm=0/124(0%) avg_px=0.703 sell=10.2% BTC directional
+  - ADDED (priority=1): CryptoUD15m-a3ba 0xa3bac9ce.. mm=0/124(0%) avg_px=0.756 sell=2.2% BTC directional
+  - REJECTED: 719c (recent_px 0.82-0.89 near-certainty), 2ec4 (100% UP bias bot), 7b03 (near-certainty bettor)
+  - Total: 4 priority=1 wallets. 78c3 slot not filled: clean over quantity.
+v7.8.29 (2026-03-20) — Wallet replacement: 5 fresh crypto15m wallets in, 2 old out
+  - REMOVED (priority=2): CryptoUD15m-78c3 (0x78c3..) ranked 6th by recency (14.8h last buy)
+  - REMOVED (priority=2): CryptoUD15m-e12f (0xe12f..) confirmed dead address
+  - ADDED (priority=1): CryptoUD15m-e28f 0xe28feea8.. PASS_PRIMARY last_buy=0.0h avg_px=0.564
+  - ADDED (priority=1): CryptoUD15m-bcd5 0xbcd57328.. PASS_PRIMARY last_buy=0.0h avg_px=0.615
+  - ADDED (priority=1): CryptoUD15m-9bff 0x9bff660e.. PASS_PRIMARY last_buy=0.1h avg_px=0.509
+  - ADDED (priority=1): CryptoUD15m-3123 0x3123e448.. PASS_PRIMARY last_buy=0.1h avg_px=0.565
+  - ADDED (priority=1): CryptoUD15m-397b 0x397b7138.. PASS_PRIMARY last_buy=1.8h avg_px=0.457
+  - REJECTED: 0x920e797d (avg_px=0.905 POST_RES_BOT_SUSPECT), 0x7675a75a (last_buy=192.5h TOO_OLD)
+  - Exactly 5 priority=1 wallets active. is_15min_crypto_ud() gate unchanged.
+v7.8.27 (2026-03-20) — One-flat-$15 entry rule for crypto15m wallets (no repeat buys, no pyramiding)
+  - max_stake: 8.0→15.0, stake_mult: 0.5→1.0 for CryptoUD15m-78c3 and CryptoUD15m-e12f.
+  - Change B: same-market block in execute_group BUY path — checks conditionId (_inc_cid) against
+    all positions held by same crypto15m trader. Duplicate token → DUPLICATE_MARKET_BLOCK + return.
+    Opposite-side same conditionId → OPPOSITE_SIDE_BLOCK + return. Fires before stake calculation.
+  - Change C: flat $15 override after calculate_stake()/sizing/confluence/whale — sets effective_stake=15.0
+    unconditionally for any crypto15m trader. Confluence boost and whale guard both skip crypto15m.
+  - Backstop: v7.8.25 notional cap sees remaining_budget=$15-$15=$0 ≤ $0.50 on any second entry attempt.
+  - No changes to any other trader configs, guards, or the value bot.
+v7.8.19 (2026-03-14) — Fix CTF NegRisk redemption NameError: Account._sign_hash/_from_key → _w3.eth.account (never imported; trapped NR wins now redeem)
+v7.8.25 (2026-03-19) — Per-token cumulative notional cap (sizing-up safety fix)
+  - ROOT CAUSE: Signal47-Bets bought same Clippers token twice ($20+$20=$40) on 2026-03-18.
+    Source wallet made two distinct txns (trader_ts 1773873561 and 1773873601, 40s apart).
+    Dedup correctly allowed both (different trader_ts). Per-order cap correctly applied $20 each.
+    Gap: no check on cumulative stake already deployed on the same token_id.
+  - FIX: Per-token cumulative notional cap added to execute_group (after whale guard, before order book).
+    Reads positions[token_id+"_meta"]["stake"] (accumulated by prior fills, same session).
+    remaining_budget = trader_cap - already_deployed
+    If remaining_budget <= $0.50: buy fully blocked (NOTIONAL_CAP_BLOCKED), logged to trade_log.
+    If effective_stake > remaining_budget: buy clipped to remaining (NOTIONAL_CAP_CLIPPED), logged.
+    If first buy (already_deployed=0): no change — passes through cleanly.
+  - RESULT: Signal47-Bets max_stake=$20 now means $20 TOTAL per token, not $20 per order.
+    Same applies to all traders. Sizing-up second buy is still allowed up to remaining budget.
+    Example: first buy at price-adjusted $12 → second buy allowed up to $8 (not $20).
+  - No config changes. MAX_BUYS_PER_MARKET=2 kept (sizing-up still works within cap).
+  Backup: copytrade_bot.py.bak_pre7825
+
+v7.8.24 (2026-03-18) — Bench BroadSports-3ad1 + bigwhale1337 Dota2 block
+  - BroadSports-3ad1 BENCHED: 5W/5L=50%WR at 10 bot-resolved. Source/bot WR delta=49pp (99.2% src vs 50% bot).
+    Root cause: structural followability failure on thin European soccer draw/BTTS/exotic CLOBs.
+    Positive net P&L (+$86 on $94 staked) is artifact of cheap-entry odds, not real edge transfer.
+    priority 1→2. Existing 3 open positions (Ducks, Avellino draw, Carrarese draw) remain tracked to resolution.
+  - bigwhale1337 Dota2 BLOCKED: confirmed NEAR_ZERO_PURGE pattern on thin Dota2 CLOBs (delayed fills never
+    confirming before market stales). CS2 and tennis remain fully active.
+    Implementation: "blocked_categories": ["dota2"] in trader config + per-trader block check in execute_group.
+    New "dota2" key added to CATEGORY_KEYWORDS with keywords: dota, dota 2, dota2, vici gaming.
+  - Architecture: added per-trader "blocked_categories" blacklist field to execute_group (v7.8.24).
+    Checked after global block, before resolution days filter. Fail-open on I/O.
+  Backup: copytrade_bot.py.bak_pre7824
+
+v7.8.23 (2026-03-14) — Bench NBAEdge-aeab: 5W/4L=55.6% WR at 9 resolved; best-case 6/10=60% still fails 70% floor; high-fire capital drain removed
+v7.8.22 (2026-03-14) — Tighten SportOdds-26f2: per-trader daily_stop=-$8 (was global -$40); eval moved to 5 resolved
+v7.8.21 (2026-03-14) — Add SportOdds-26f2: 59W/0L CSL+LaLiga soccer ML/O/U + NBA O/U, 8.2d, 100%WR(59r), 0.542avg_entry, probationary 0.5x/$8/-$10
+v7.8.20 (2026-03-14) — Bench Unwieldy-Forage: 1W/9L confirmed (5×soccer+4×NHL losses), P(1W/9L|94%WR)≈0, edge gone
+v7.8.18 (2026-03-13) — Emergency audit: MAX_ENTRY_PRICE 0.85→0.70; bench WeatherSharp-65f (0W/7L @0.96 entry); reduce Unwieldy $20→$10; cap 0x8ae3a587 $15→$8; reduce NBAEdge $12→$8
+v7.8.17 (2026-03-13) — Startup PID guard + cross-process order dedup (_dedup_orders.json, TTL=120s)
+v7.8.16 (2026-03-13) — Opposite-side conflict guard (same conditionId + different token_id = REJECT)
+v7.8.15 (2026-03-13) — Per-trader max_entry_price override + WeatherSharp-65f (weather specialist)
+v7.8.14 (2026-03-13) — Add BroadSports-3ad1 (99.2%WR/120r/28d, multi-sport, 3%sell)
+v7.8.13 (2026-03-13) — Bench 5 dead/misclassified traders: gem62/gem61/NBA-9c88/InfoEdge/SPXOpens
+v7.8.11 (2026-03-11) — Upsize UDWhale-cd82 + SPXOpens-f52c to $15 starter (mult 0.6->0.75, max->$15, stop->-$20)
+v7.8.10 (2026-03-11) — Add UDWhale-cd82 + SPXOpens-f52c (2 UD specialist probationary)
+v7.8.9 (2026-03-11) — Proven-core effective-stake upgrade to $18-20 (4 traders only):
+  Signal47: max $15→$20, stop -$15→-$20 | Immense: max $15→$20, stop -$15→-$20
+  Triangular: mult 0.7→0.85, max $12→$20, stop -$12→-$20 | Unwieldy: mult 0.8→0.9, max $12→$20, stop -$12→-$20
+  Global stop: -$35→-$40. Nothing else touched.
+v7.8.8 (2026-03-11) — Proven-core sizing upgrade (fresh capital $285) + bench chenpengzao:
+  Signal47-Bets: max $8→$15, stop -$8→-$15 | 54W/2L +67.8% ROI — survival cap lifted.
+  Immense-Gokart: max $10→$15, stop -$10→-$15 | 53W/0L +53.9% ROI — zero losses ever.
+  Triangular-Box: max $8→$12 mult 0.6→0.7, stop -$8→-$12 | 198W/3L +48.2% ROI.
+  Unwieldy-Forage: max $8→$12 mult 0.7→0.8, stop -$8→-$12 | 160W/9L +93.8% ROI best.
+  Global stop: -$25→-$35 (12.3% of $285 bankroll).
+  chenpengzao BENCHED: 3W/4L -48.1% ROI — probation failed (4L > 2 before 3W).
+  No-change: gem62/gem61/NBA-9c88/bigwhale/InfoEdge — wait for resolved positions.
+v7.8.7 (2026-03-10) — Re-add bigwhale1337 + Add InfoEdge-a2ed (2 new, 10 total active):
+  bigwhale1337: scout 81.8%WR(27W/6L)@$114 + 40 dust wins (sizeThreshold=0.001). 100% sports
+  (CS2+tennis+Dota2), $1244 avg, 86d, 0 clusters, 6% blk. Emergency-benched v7.7 (not perf).
+  max_stake=$12, stop=-$15.
+  InfoEdge-a2ed (scan4): 99%WR(97W/1L)/98res, $291avg, 121d, entry=0.450. Musk-tweet+soccer.
+  Not blocked/crypto (crypto_pct=10%). hold=0.37 (CLOB-exit) mitigated: bot holds to $1.
+  max_stake=$15, stop=-$20.
+  Scan4 rejects: 0x0799 (9 resolved too thin), 0x79433 (bot-pattern/micro).
+v7.8.6 (2026-03-10) — Add chenpengzao (B_PROBATIONARY, whale):
+  broader_promo.py scan: 244 candidates → 1 viable (chenpengzao).
+  chenpengzao (0xb2a48372): 91.7%WR(11W/1L) | $1794 avg_stake | 14d age | entry=0.57
+  sport=49% | hold=0.00(CLOB-exit,mitigated) | clust=1 | blk=19%
+  Added max_stake=$5, stop=-$10 (minimum probationary leash).
+  Structural: 189/244 too_young (77.5%) confirms sparse market pool.
+v7.8.5 (2026-03-10) — Promote gem61-WBC + NBA-9c88 to priority=1 (active):
+  Aggressive discovery scan (552 candidates) found 0 new viable wallets.
+  Niche scan (MMA/tennis/cricket) also ran — results pending.
+  gem61-WBC: priority 2→1. WBC baseball specialist, 30W/1L, $19 avg.
+  NBA-9c88:  priority 2→1. NBA+esports, 22 resolved, $27 avg, 0 clusters.
+  gem68-NBA permanently rejected: 40/40 markets overlap gem62, 25 same-second.
+
+v7.8.4 (2026-03-10) — Broad discovery: add gem61-WBC + NBA-9c88 at priority=2:
+  gem61-WBC (0xf21b5380): 30W/1L, avg_stake=$19, WBC baseball, 481d, score=68.0
+  NBA-9c88  (0x9c886f69): deep_scan score=79.3, 21W/1L (22 res), avg_stake=$27, 468d, 0 clusters
+  Both added priority=2 (shadow/probationary), tight caps.
+
+v7.8.3 (2026-03-10) — Promote gem62-NBA to priority=1 (probationary):
+  gem62-NBA priority 2→1. max_stake=$6, stop=-$12 unchanged (tight leash).
+  Profile: 24W/0L, avg_stake=$133, avg_entry~0.54, 95% NBA, 0 clusters.
+  gem68 (co-trader, same-signal) NOT added. Signal47 stays priority=1.
+  Backup: copytrade_bot.py.bak_pre783
+
+v7.8.2 (2026-03-10) — Add gem62-NBA at priority=2:
+  Add gem62-NBA (0xbb63e472...) to TRADERS at priority=2, max_stake=$6, stop=-$12.
+  61d age, 24W/0L, avg_stake=$133, 95% NBA, 0 clusters. Scanner score=62.3.
+  Signal47 confirmed 83% NBA (NOT pivoted) — gem62 added as bench depth, not replacement.
+  gem68 (0x4b916c5a, co-trader same-game same-timestamp) held back to avoid duplicate signal.
+  Backup: copytrade_bot.py.bak_pre782
+
 v7.8.1 (2026-03-10) — Bench Superb-Hyacinth (zero signals in v7.7/v7.8 era):
   Audit confirmed 0 copied buys in 5+ days. API empty for 0x419be42e. Priority 1→2.
   Signal47/Triangular/Immense retained at priority=1 (proven edge, explainable dormancy).
@@ -296,12 +418,12 @@ CHAIN_ID           = int(os.getenv("CHAIN_ID",              "137"))
 # ── RISK CONTROLS ─────────────────────────────────────────────────────────────
 MAX_SLIPPAGE       = float(os.getenv("MAX_SLIPPAGE",        "0.08"))
 MAX_PER_MARKET     = float(os.getenv("MAX_PER_MARKET_USDC", "80.0"))   # v7.0: $40 → $80 — allow full position building
-MAX_STAKE_PER_TRADE= float(os.getenv("MAX_STAKE_PER_TRADE", "40.0"))  # v7.0: $20 → $40 — unlocks per-trader max_stake overrides
+MAX_STAKE_PER_TRADE= float(os.getenv("MAX_STAKE_PER_TRADE", "50.0"))  # v7.8.33: $40→$50  # v7.0: $20 → $40 — unlocks per-trader max_stake overrides
 MAX_CLAIM_ATTEMPTS = 3                                               # v7.5: abandon stuck claim after N tries across restarts
 FILL_AGG_WINDOW    = int(os.getenv("FILL_AGG_WINDOW_SEC",   "15"))   # v6.5: 60→15s — was the main latency bottleneck
 STALENESS_CUTOFF   = int(os.getenv("STALENESS_CUTOFF_SEC",  "90"))   # v6.5: 300→90s — reject signals >90s old
 MAX_SPREAD         = float(os.getenv("MAX_SPREAD",          "0.05"))
-MAX_ENTRY_PRICE    = float(os.getenv("MAX_ENTRY_PRICE",     "0.85"))
+MAX_ENTRY_PRICE    = float(os.getenv("MAX_ENTRY_PRICE",     "0.70"))  # v7.8.18: tightened 0.85→0.70 — kills expensive junk signals
 
 # v6.0: Resolution days filter — skip markets resolving more than N days from now
 MAX_RESOLUTION_DAYS = int(os.getenv("MAX_RESOLUTION_DAYS", "14"))
@@ -310,21 +432,47 @@ MAX_RESOLUTION_DAYS = int(os.getenv("MAX_RESOLUTION_DAYS", "14"))
 # Keys must match TRADERS[*]["name"]. "default" applies to any trader not listed.
 # "global" is the hard floor across all traders combined.
 DAILY_LOSS_STOPS = {
-    "global":     -25,   # v7.7: survival mode emergency floor | was: -200
+    "global":     -150,  # v7.8.33: 3×$50 — 5-wallet stack at $50/trade | was: -40
     "per_trader": {
         # v7.0: all limits raised to match new sizing (≈ 2 max-stake losses per trader per day)
-        "Signal47-Bets":     -8,   # v7.7: survival mode | was: -30
-        "Immense-Gokart":    -10,  # v7.7: survival mode leash | was: -25
+        "Signal47-Bets":     -100,  # v7.8.33: proven core $50 sizing (2× max_stake)
+        "Immense-Gokart":    -100,  # v7.8.33: proven core $50 sizing (2× max_stake)
         "GEM-0x69aee":       -8,   # v7.7: benched | was: -20
         "Quixotic-Average":  -15,  # thin (16W/0L) | 0.4× stake | max $12/trade
         # CS2-LoL-Sharp REMOVED v7.2 | was: -20
         # (0W/5L — see TRADERS removal note above)
         # MultiSport-8f80 REMOVED — 1W/11L (8.3% WR) confirmed bleed
         # v7.1: new leaderboard traders
-        "Triangular-Box":    -8,   # v7.7: survival mode | was: -25
-        "Unwieldy-Forage":   -8,   # v7.7: survival mode | was: -25
+        "Triangular-Box":    -100,  # v7.8.33: proven core $50 sizing (2× max_stake)
+        "Unwieldy-Forage":   -20,  # v7.8.9: proven core $20 sizing | was: -12
         "Helpful-Contention": -8,  # v7.7: irrelevant (benched-crypto) | was: -15
         "Superb-Hyacinth":   -8,   # v7.7: survival mode | was: -12
+        "gem62-NBA":         -12,  # v7.8.2: new, tight leash 2x max_stake
+                "gem61-WBC":         -12,  # v7.8.4: probationary
+                "NBA-9c88":          -12,  # v7.8.4: probationary
+        "chenpengzao":       -10,  # v7.8.6: probationary, 2x max_stake
+        "bigwhale1337":       -50,   # v7.8.33: $50 max_stake | was: -15
+        "0x8ae3a587":      -50,   # v7.8.33: $50 max_stake
+        "InfoEdge-a2ed":      -20,  # v7.8.7: new scan4 find, Musk-tweet+soccer
+        "UDWhale-cd82":       -20,  # v7.8.11: starter $15 sizing, stop=1.33x max
+        "SPXOpens-f52c":      -20,  # v7.8.11: starter $15 sizing, stop=1.33x max
+        "NBAEdge-aeab":       -15,  # v7.8.12: new, NBA spread/total/ML specialist
+        "SoccerSharp-f23c":   -20,  # v7.8.12: new, soccer+generalist
+        "Sport-dd57":         -12,  # v7.8.12: new probationary, mixed sports
+        "BroadSports-3ad1":   -15,  # v7.8.14: new probationary, broad multi-sport
+        "WeatherSharp-65f":    -6,  # v7.8.15: tiny sizing ($3/bet) — tight leash on new category
+        "SportOdds-26f2":    -8,   # v7.8.22: tight leash — 8.2d young, sell=36.9%; 1× max_stake; stops after first net-loss day
+        "CryptoUD15m-e28f":  -10,  # v7.8.29: new crypto15m specialist
+        "CryptoUD15m-bcd5":  -10,  # v7.8.29: new crypto15m specialist
+        "CryptoUD15m-9bff":  -10,  # v7.8.29: new crypto15m specialist
+        "CryptoUD15m-3123":  -10,  # v7.8.29: new crypto15m specialist
+        "CryptoUD15m-397b":  -10,  # v7.8.29: new crypto15m specialist
+        "CryptoUD15m-78c3":  -10,  # v7.8.30: BENCHED — MM confirmed
+        "CryptoUD15m-e12f":  -10,  # v7.8.26: dead address (priority=2 v7.8.29)
+        "CryptoUD15m-b2a5":  -30,  # v7.8.30: new clean directional | 2x max_stake per day
+        "CryptoUD15m-639d":  -30,  # v7.8.30: new clean directional
+        "CryptoUD15m-5e62":  -30,  # v7.8.30: new clean directional
+        "CryptoUD15m-a3ba":  -30,  # v7.8.30: new clean directional
                 "default":           -8,   # v7.7: survival mode floor
     },
 }
@@ -430,12 +578,84 @@ if PROXY_URL:
 LOG_FILE        = Path(__file__).parent / "trade_log.jsonl"
 POSITIONS_FILE  = Path(__file__).parent / "positions.json"
 EDGE_SCORE_FILE = Path(__file__).parent / "edge_scores.json"
+DEDUP_FILE      = Path(__file__).parent / "_dedup_orders.json"  # v7.8.17: cross-process dedup
+_DEDUP_TTL      = 120  # seconds — window for blocking duplicate orders
 
 DATA_API  = "https://data-api.polymarket.com"
 GAMMA_API = "https://gamma-api.polymarket.com"
 POLY_BASE = "https://polymarket.com/event"
 
 _PROXIES = {"http": PROXY_URL, "https": PROXY_URL} if PROXY_URL else None
+
+# ── v7.8.26: 15-minute crypto UD gate helper ──────────────────────────────────
+def is_15min_crypto_ud(title: str) -> bool:
+    """
+    Returns True ONLY for exactly 15-minute crypto Up/Down markets.
+    v7.8.33 (2026-03-20) — Size up to $50/trade across all 5 active traders
+  - MAX_STAKE_PER_TRADE: $40 → $50 (global hard cap)
+  - Signal47-Bets:   max_stake $20 → $50 | daily_stop -$20 → -$100
+  - Immense-Gokart:  max_stake $20 → $50 | daily_stop -$20 → -$100
+  - Triangular-Box:  max_stake $20 → $50 | daily_stop -$20 → -$100
+  - bigwhale1337:    max_stake $12 → $50 | daily_stop -$15 → -$50
+  - 0x8ae3a587:      max_stake  $8 → $50 | daily_stop  -$8 → -$50
+  - DAILY_LOSS_STOPS["global"]: -$40 → -$150 (3× max_stake, 5-wallet stack)
+  - Backup: copytrade_bot.py.bak_pre7833
+v7.8.32 (2026-03-20) — Abandon crypto15m; restore proven sports core (5-wallet stack)
+  - BENCHED (priority=2): CryptoUD15m-b2a5, 639d, 5e62, a3ba — Stage-2 forensic confirmed -4.37% realized ROI,
+    exclusively BTC UD (crypto hard-ban blocks all signals), cluster of automated bots, no edge.
+    The entire crypto15m experiment is abandoned.
+  - RESTORED (priority=1): Signal47-Bets (55W/3L NBA), Immense-Gokart (53W/0L CS2),
+    Triangular-Box (198W/3L generalist), 0x8ae3a587 (3W/0L tennis/soccer, 49 buys today),
+    bigwhale1337 (CS2+tennis, 25 buys today, 0 both-sides, Dota2 still blocked).
+  - Stack: exactly 5 priority=1 wallets. Quality over quantity.
+  - Backup: copytrade_bot.py.bak_pre7832
+v7.8.31: Hardened — strictly parses start/end time delta to verify 15-min duration.
+    Blocks 5-min, 1-hour, 4-hour, and any other duration.
+    Falls back to slug hint only if time range is unparseable (never on mismatch).
+    """
+    import re as _re
+    t = title.lower()
+    # Must contain 'up or down'
+    if "up or down" not in t:
+        return False
+    # Must mention a known crypto asset
+    _c15m_assets = [
+        "bitcoin", "btc", "ethereum", "eth", "solana", "sol",
+        "xrp", "bnb", "dogecoin", "doge", "hyperliquid", "hype",
+    ]
+    if not any(a in t for a in _c15m_assets):
+        return False
+    # Parse time range: "H:MM AM/PM - H:MM AM/PM" or "H:MMam/pm-H:MMam/pm"
+    # Handles optional space between time and meridiem; both 12h formats
+    _time_re = _re.compile(
+        r'(\d{1,2}):(\d{2})\s*(am|pm)[-\u2013](\d{1,2}):(\d{2})\s*(am|pm)',
+        _re.I,
+    )
+    m = _time_re.search(t)
+    if m:
+        try:
+            h1, mn1, ap1 = int(m.group(1)), int(m.group(2)), m.group(3).lower()
+            h2, mn2, ap2 = int(m.group(4)), int(m.group(5)), m.group(6).lower()
+
+            def _to_mins(h: int, mn: int, ap: str) -> int:
+                if ap == "pm" and h != 12:
+                    h += 12
+                elif ap == "am" and h == 12:
+                    h = 0
+                return h * 60 + mn
+
+            t1 = _to_mins(h1, mn1, ap1)
+            t2 = _to_mins(h2, mn2, ap2)
+            diff = (t2 - t1) % (24 * 60)
+            return diff == 15  # exact 15-min only — rejects 5-min, 60-min, 4-hour etc.
+        except Exception:
+            pass  # fall through to slug fallback only if parse itself throws
+    else:
+        # No time range found at all — try slug hint as last resort
+        if "-15m" in t or "15min" in t:
+            return True
+    # Time range present but unparseable, OR delta != 15 — reject
+    return False
 
 # ── WATCHLIST ─────────────────────────────────────────────────────────────────
 # archetype: "value" | "generalist" | "specialist"
@@ -447,8 +667,9 @@ TRADERS = [
     # ── ACTIVE: verified human traders with honest entry prices ───────────────
     {
         "name": "Signal47-Bets", "wallet": "0xa83be3f6a49604556f45089799f2b2096e71def4",
-        "roi": None, "priority": 1, "archetype": "specialist",
-        "stake_mult": 1.2, "max_stake": 8.0,    # v7.7: survival mode cap | was: 30.0 v7.0
+        "roi": None, "priority": 1,  # v7.8.32: restored — crypto15m abandoned, proven core 55W/3L
+        "archetype": "specialist",
+        "stake_mult": 1.2, "max_stake": 50.0,   # v7.8.33: size up $20→$50
         "categories": ["nba"],
         "note": "NBA game-lines at real prices ($0.30-$0.99) | 53W/1L confirmed | HIGHEST CONVICTION",
     },
@@ -457,9 +678,9 @@ TRADERS = [
     {
         "name": "Immense-Gokart",
         "wallet": "0xf27e335d2e78a207e802879f72870449836bd69d",
-        "roi": None, "priority": 1,
+        "roi": None, "priority": 1,  # v7.8.32: restored — crypto15m abandoned, proven core 53W/0L
         "archetype": "specialist",
-        "stake_mult": 0.9, "max_stake": 10.0,   # v7.7: survival mode leash | was: 15.0 v7.6.14
+        "stake_mult": 0.9, "max_stake": 50.0,   # v7.8.33: size up $20→$50
         "categories": ["esports"],
         "note": "CS2 map specialist | 53W/1L confirmed | avg $0.319 | 1.3/d | 97d",
     },
@@ -494,22 +715,22 @@ TRADERS = [
     {
         "name": "Triangular-Box",
         "wallet": "0xe85d6567a750b7b15fcb51c01a7c6230f63095d8",
-        "roi": None, "priority": 1,
+        "roi": None, "priority": 1,  # v7.8.32: restored — crypto15m abandoned, proven core 198W/3L
         "archetype": "generalist",
         "bypass_global_block": True,    # v7.1: 99% WR across all niches — unrestricted
-        "stake_mult": 0.6, "max_stake": 8.0,    # v7.7: survival mode cap | was: 20.0
+        "stake_mult": 0.85, "max_stake": 50.0,  # v7.8.33: size up $20→$50
         "categories": [],   # sports 57% + other 41% (NBA/CS2/LoL + misc)
         "note": "99% WR (195W/1L verified) | avg /bin/zsh.658 | freq=6.0/d | age=44d | sports/esports/other",
     },
     {
         "name": "Unwieldy-Forage",
         "wallet": "0x146703a8a73ae1dff0f84ba44c45d878858a4372",
-        "roi": None, "priority": 1,
+        "roi": None, "priority": 2,  # v7.8.20: BENCHED — 1W/9L bot (5×soccer+4×NHL); P(1W/9L|94%WR)≈0; edge decayed; re-eval ~Apr 4
         "archetype": "generalist",
         "bypass_global_block": True,    # v7.1: 100% WR — unrestricted
-        "stake_mult": 0.7, "max_stake": 8.0,    # v7.7: survival mode cap | was: 22.0
+        "stake_mult": 0.9, "max_stake": 10.0,   # v7.8.18: audit cut | v7.8.20: moot (benched)
         "categories": [],   # NHL/soccer (keyword mismatch — generalist catches all)
-        "note": "100% WR (157W/0L verified) | 0 bot clusters | avg /bin/zsh.473 | freq=4.2/d | age=60d | NHL/soccer",
+        "note": "BENCHED v7.8.20: 1W/9L real bot perf (soccer: Spurs/PSG/W.Sydney/Bayer/Wolfsburg/Lille; NHL: Caps/Maple Leafs/Caps); src WR decayed 94%→81%",
     },
     {
         "name": "Helpful-Contention",
@@ -634,7 +855,332 @@ TRADERS = [
         "stake_mult": 0.7, "max_stake": 8.0,
         "note": "Auto-added by scanner v1.6 | score=85.6 | 100r 99%WR | sports=66%",
     },
-    # END_TRADERS  ← scanner auto-add injects new entries here
+    {
+        "name": "gem62-NBA",
+        "wallet": "0xbb63e47263321b67d7535f3909f2ec3c10a0bea4",
+        "roi": None, "priority": 2,  # v7.8.13: BENCHED — 0 bot fires, 0 resolved in session; no live activity in API
+        "archetype": "specialist",
+        "stake_mult": 0.5, "max_stake": 6.0,   # v7.8.3: tight leash — stop=-$12 | 24W/0L $133/bet avg
+        "note": "gem62 scanner v1.12 | score=62.3 | 61d age | 24W/0L | avg_stake=$133 | 95% NBA | 0 clusters | promoted probationary v7.8.3 2026-03-10",
+    },
+    {
+        "name": "gem61-WBC",
+        "wallet": "0xf21b5380ac186a254422e046a97b0e80c8a8894e",
+        "roi": None, "priority": 2,  # v7.8.13: BENCHED — 0 bot fires, 0 resolved; WBC window closed, no API activity
+        "archetype": "specialist",
+        "stake_mult": 0.6, "max_stake": 8.0,   # v7.8.4: tight leash — $19/bet source, capped at $8
+        "categories": [],   # scanner: sports_pct=90.4%, blocked_pct=0% — generalist config
+        "note": "WBC baseball specialist | 30W/1L verified | avg_stake=$19 | avg_entry=0.371 | 481d age | score=68.0 | 0 clusters | added v7.8.4 2026-03-10",
+    },
+    {
+        "name": "NBA-9c88",
+        "wallet": "0x9c886f69a9e2e5dfcf53f5ef6058925865f16871",
+        "roi": None, "priority": 2,  # v7.8.13: BENCHED — 0 bot fires, 0 API activity in entire session
+        "archetype": "generalist",
+        "stake_mult": 0.6, "max_stake": 6.0,   # v7.8.4: tight leash — deep_scan score=79.3
+        "categories": [],   # deep_scan: sports_pct=54.3%, no bypass_global_block
+        "note": "NBA+esports multi-game | deep_scan score=79.3 | 21W/1L (22 res) | avg_stake=$27 | avg_entry=0.527 | 468d | 0 clusters | added v7.8.4 2026-03-10",
+    },
+    {
+        "name": "chenpengzao",
+        "wallet": "0xb2a48372404e6a0bfb6c2f23d715d3acc5a8cf8a",
+        "roi": None, "priority": 2,  # v7.8.8: BENCHED — 3W/4L -48.1% ROI probation failed
+        "archetype": "generalist",
+        "stake_mult": 0.3, "max_stake": 5.0,   # v7.8.6: minimum cap — $1794 whale, copy at $5 flat
+        "categories": [],   # sport=49%, crypto_pct=0.6% (crypto hard-banned; hold=0.00 mitigated)
+        "note": "chenpengzao | B_PROB broader_promo | 91.7%WR(11W/1L) | avg_stake=$1794 | avg_entry=0.57 | 14d age | freq=5.7/d | clust=1 | blk=19% | hold=0.00(CLOB-exit) | added v7.8.6 2026-03-10",
+    },
+    {
+        "name": "bigwhale1337",
+        "wallet": "0x77f623734a71c023f9df91011189eaeef891dbd1",
+        "roi": None, "priority": 1,  # v7.8.32: restored — CS2+tennis, 25 buys today, 0 both-sides, Dota2 blocked
+        "archetype": "specialist",
+        "stake_mult": 0.6, "max_stake": 50.0,  # v7.8.33: size up $12→$50
+        "categories": [],  # 100% sports: CS2+tennis+Dota2 (crypto hard-banned by default)
+        "blocked_categories": ["dota2"],  # v7.8.24: block Dota2 — confirmed NEAR_ZERO_PURGE pattern on thin Dota2 CLOBs; CS2+tennis remain fully active
+        "note": "bigwhale1337 | re-add v7.8.7 | scout 81.8%WR(27W/6L)@$114 | 40 dust wins 0L sizeThresh=0.001 | cur_avg=$1244 | 86d | CS2+tennis+Dota2 | 0clust | 6%blk | hold=0.55 | freq=1.3/d | emergency-benched v7.7 (no history not perf)",
+    },
+    {
+        "name": "InfoEdge-a2ed",
+        "wallet": "0xa2ed440b6e3b9738a547c5a20f79616b63828808",
+        "roi": None, "priority": 2,  # v7.8.13: BENCHED — 52% sell ratio (CLOB-exit flipper), fake-clean WR, b24=0 dormant
+        "archetype": "generalist",
+        "stake_mult": 0.6, "max_stake": 15.0,  # v7.8.7: ~5% of $291 avg — probationary
+        "categories": [],  # Musk tweet-count markets + soccer; crypto=10% (hard-banned anyway)
+        "note": "InfoEdge-a2ed | scan4 find v7.8.7 | 99%WR(97W/1L)/98res | $291avg | 121d | entry=0.450 | crypto=10% blk=13% spt=1% | hold=0.37(CLOB-exit mitigated) | Musk-tweet specialist+soccer | added v7.8.7 2026-03-10",
+    },
+    {
+        "name": "UDWhale-cd82",
+        "wallet": "0x898ebb087c7768ed4d47462f85856269dd8cd82c",
+        "roi": None, "priority": 2,  # v7.8.12: BENCHED — BTC 5-min scalper; 24 crypto-blocked signals; 0 copies ever
+        "archetype": "specialist",
+        "stake_mult": 0.75, "max_stake": 15.0,  # v7.8.11: starter; eff~$15@p0.5 | real avg=$101
+        "categories": [],  # 100% UD stock+index (SPX/NDX/NVDA/META etc); entry=0.486 balanced
+        "note": "UDWhale-cd82 | v7.8.11 upsize | 99%WR(158W/1L)/159res | $101avg | 148d | entry=0.486 | 0clust | 100%UD-specialist | crypto=0% | audit@20copies | bench@2ugly | added 2026-03-11",
+    },
+    {
+        "name": "SPXOpens-f52c",
+        "wallet": "0x40344cc4ba1a39648399b2d97d0d31c27122f52c",
+        "roi": None, "priority": 2,  # v7.8.13: BENCHED — MISCLASSIFIED: 30% blocked (Trump speech/Brazil politics), 42% sell ratio, b24=0
+        "archetype": "specialist",
+        "stake_mult": 0.75, "max_stake": 15.0,  # v7.8.11: starter; eff~$15@p0.5 | real avg=$13
+        "categories": [],  # SPX Opens Up or Down primary; 32 UD buys; entry=0.521
+        "note": "SPXOpens-f52c | v7.8.11 upsize | 91.6%WR(98W/9L)/107res | $13avg | 43d | entry=0.521 | 0clust | SPX-Opens specialist | crypto=2% | audit@20copies | bench@2ugly | added 2026-03-11",
+    },
+    {
+        "name": "NBAEdge-aeab",
+        "wallet": "0xaeab8222e044ab64b7253a3c10c16ba75096a2ed",
+        "roi": None, "priority": 2,  # v7.8.23: BENCHED — 5W/4L=55.6% bot WR at 9 resolved; best-case 6/10=60% still fails 70% floor; high-fire ($8×16/72h) capital drain
+        "archetype": "specialist",
+        "stake_mult": 0.6, "max_stake": 8.0,   # v7.8.18: audit cut — 1W/4L bot perf (early); tightened from $12; re-eval after 10 resolved | was: 12.0 v7.8.12
+        "categories": [],  # pure NBA spreads/totals/moneylines; entry=0.419; sports=34.5%; crypto=2.4%
+        "note": "NBAEdge-aeab | v7.8.12 new | 97.4%WR(113W/3L)/116res | $12avg | 81d | entry=0.419 | 0clust | NBA specialist (spread/total/ML) | crypto=2.4% blk=0% spt=34.5% | 7b/24h | added 2026-03-11",
+    },
+    {
+        "name": "SoccerSharp-f23c",
+        "wallet": "0xf23ca65324b789016acaffb6c2dccae48657555d",
+        "roi": None, "priority": 2,  # v7.8.26: paused — replaced by crypto15m stack | was priority=1 v7.8.12: 99.2%WR(130W/1L)/131res, 94d, $23avg, 1clust
+        "archetype": "generalist",
+        "stake_mult": 0.65, "max_stake": 15.0,  # v7.8.12: eff~$13@p0.5 | real avg=$23.5
+        "categories": [],  # soccer BTTS/ML + NBA; crypto=0%; blk=0.7%; entry=0.582
+        "note": "SoccerSharp-f23c | v7.8.12 new | 99.2%WR(130W/1L)/131res | $23avg | 94d | entry=0.582 | 1clust | soccer+NBA generalist | crypto=0% blk=0.7% spt=15.1% | 6b/24h | added 2026-03-11",
+    },
+    {
+        "name": "Sport-dd57",
+        "wallet": "0xdd57cbe710edcb13a0e315003ec68c00c18e530f",
+        "roi": None, "priority": 2,  # v7.8.26: paused — replaced by crypto15m stack | was priority=1 v7.8.12: 97%WR(32W/1L)/33res, 28.8d, $31avg, 0clust
+        "archetype": "generalist",
+        "stake_mult": 0.5, "max_stake": 8.0,  # v7.8.12: light — young 29d, 33 resolved only
+        "categories": [],  # soccer+CS2+NBA; crypto=13.4%(blocked); blk=2.1%; entry=0.568
+        "note": "Sport-dd57 | v7.8.12 new probationary | 97%WR(32W/1L)/33res | $31avg | 28.8d | entry=0.568 | 0clust | mixed sports (soccer+CS2+NBA) | crypto=13.4%(blocked) blk=2.1% | 9b/24h | added 2026-03-11",
+    },
+    {
+        "name": "BroadSports-3ad1",
+        "wallet": "0x3ad91bd36f4fb04b907eddfeeaa85ac95fd53cb4",
+        "roi": None, "priority": 2,  # v7.8.24: BENCHED — 5W/5L=50%WR at 10 resolved; source/bot WR delta=49pp (99.2% src vs 50% bot); structural followability failure on thin Euro soccer CLOBs. Existing open positions remain tracked to resolution.
+        "archetype": "specialist",
+        "stake_mult": 0.55, "max_stake": 10.0,  # probationary — young 28d; cap at 
+        "categories": [],  # NBA+NCAAB+NHL+soccer+tennis+Dota2; crypto=0%; sell=3%; entry=0.498
+        "note": "BroadSports-3ad1 | v7.8.14 new | 99.2%WR(119W/1L)/120r | .7avg | 28d | entry=0.498 | 0clust | multi-sport (NBA/NCAAB/NHL/soccer/tennis/Dota2) | crypto=0% sell=3% blk=0% | 14b/24h | added 2026-03-13",
+    },
+    
+    {
+        "name": "0x8ae3a587",
+        "wallet": "0x8ae3a5879abc085c27ba803d056ea7a170b43c15",
+        "roi": None, "priority": 1,  # v7.8.32: restored — 3W/0L eval@10, tennis+soccer, 49 buys today
+        "archetype": "generalist",
+        "stake_mult": 0.7, "max_stake": 50.0,  # v7.8.33: size up $8→$50
+        "note": "Auto-added by scanner v1.6 | score=85.7 | 83r 99%WR | sports=94%",
+    },
+    {
+        "name": "WeatherSharp-65f",
+        "wallet": "0x65f93c0f054db935ed6a254c0ce0e9b3ca624425",
+        "roi": None, "priority": 2,  # v7.8.18: BENCHED — 0W/7L (0%WR) in 24h at avg_entry=0.961; weather trader CLOB-exits pre-resolution (62% sell), we hold to expiry and bleed. Scan 175W/0L is survivorship bias via early exit. DO NOT REACTIVATE.
+        "archetype": "specialist",
+        # max_entry_price: 0.99 REMOVED v7.8.18 — override was the root cause of buying near-certainty garbage
+        "stake_mult": 1.5, "max_stake": 3.0,   # BENCHED — params irrelevant
+        "categories": [],  # 100% weather; crypto=0%; sell=62%(85%CLOB-exit at ≥0.95); entry avg=0.954
+        "note": "WeatherSharp-65f | v7.8.15 new | 100%WR(175W/0L)/175r | $90avg | weather specialist | entry avg=0.954 | max_entry_price=0.99 override | 0clust | crypto=0% | 52b/24h | added 2026-03-13",
+    },
+    {
+        "name": "SportOdds-26f2",
+        "wallet": "0x26f247002a32c8c95dd8f767b68dac218fc21761",
+        "roi": None, "priority": 2,  # v7.8.26: paused — replaced by crypto15m stack
+        "archetype": "generalist",
+        "bypass_global_block": False,
+        "stake_mult": 0.5, "max_stake": 8.0,   # v7.8.21: probationary — 8.2d young; 59W/0L(100%WR); eval at 10 resolved
+        "categories": [],   # CSL soccer ML + LaLiga ML + NBA O/U totals (all clean)
+        "note": "SportOdds-26f2 | 59W/0L/100%WR 8d | CSL+LaLiga soccer ML+O/U + NBA totals | avg_entry=0.542 | sell=36.9%(60% winner-exits) | b24=16 active | no crypto/blocked | v7.8.22: daily_stop=-$8; eval at 5 resolved",
+    },
+    # ── v7.8.29: Crypto 15-min UD specialists (replacement roster) ─────────────
+    {
+        "name": "CryptoUD15m-e28f",
+        "wallet": "0xe28feea8eb5e5f909d574a92f860fa751712a9b0",
+        "roi": None, "priority": 2,
+        "archetype": "specialist",
+        "stake_mult": 1.0, "max_stake": 15.0,
+        "categories": [],
+        "blocked_categories": [],
+        "bypass_global_block": False,
+        "crypto_15min_ud_only": True,
+        # v7.8.29: added 2026-03-20 — live check PASS_PRIMARY (last_buy=0.0h, avg_px=0.564, sell=0.0%); phase2 FULL wr=59.7% 297mkts sell=31.4% — note high sell in phase2 but 0 sells in live check (443 buys); multi-asset XRP/ETH/BTC/SOL/DOGE/HYPE/BNB
+    },
+    {
+        "name": "CryptoUD15m-bcd5",
+        "wallet": "0xbcd5732808405131e2ed481efea993ad0567cee8",
+        "roi": None, "priority": 2,
+        "archetype": "specialist",
+        "stake_mult": 1.0, "max_stake": 15.0,
+        "categories": [],
+        "blocked_categories": [],
+        "bypass_global_block": False,
+        "crypto_15min_ud_only": True,
+        # v7.8.29: added 2026-03-20 — live check PASS_PRIMARY (last_buy=0.0h, avg_px=0.615, sell=0.0%); phase2 FULL wr=53.7% 504mkts — high vol multi-asset BTC/ETH; 8292 buys 50d
+    },
+    {
+        "name": "CryptoUD15m-9bff",
+        "wallet": "0x9bff660e1d747dc4dd18ea6e89f9ca8e0b61f622",
+        "roi": None, "priority": 2,
+        "archetype": "specialist",
+        "stake_mult": 1.0, "max_stake": 15.0,
+        "categories": [],
+        "blocked_categories": [],
+        "bypass_global_block": False,
+        "crypto_15min_ud_only": True,
+        # v7.8.29: added 2026-03-20 — live check PASS_PRIMARY (last_buy=0.1h, avg_px=0.509, sell=0.0%); phase2 FULL wr=58.8% 105mkts; BTC-only; 3977 buys 26d
+    },
+    {
+        "name": "CryptoUD15m-3123",
+        "wallet": "0x3123e448199cc7d7d53dd77e2082d8996d9c1fc9",
+        "roi": None, "priority": 2,
+        "archetype": "specialist",
+        "stake_mult": 1.0, "max_stake": 15.0,
+        "categories": [],
+        "blocked_categories": [],
+        "bypass_global_block": False,
+        "crypto_15min_ud_only": True,
+        # v7.8.29: added 2026-03-20 — live check PASS_PRIMARY (last_buy=0.1h, avg_px=0.565, sell=0.0%); phase2 FULL wr=72.5% 1067mkts; multi-asset XRP/ETH/BTC/SOL; 4292 buys 47d
+    },
+    {
+        "name": "CryptoUD15m-397b",
+        "wallet": "0x397b7138ded2e7d95280dd36a63592a8f710d4bd",
+        "roi": None, "priority": 2,
+        "archetype": "specialist",
+        "stake_mult": 1.0, "max_stake": 15.0,
+        "categories": [],
+        "blocked_categories": [],
+        "bypass_global_block": False,
+        "crypto_15min_ud_only": True,
+        # v7.8.29: added 2026-03-20 — live check PASS_PRIMARY (last_buy=1.8h, avg_px=0.457, sell=0.0%); phase2 FULL wr=73.1% 210mkts; multi-asset BTC/ETH/XRP/SOL; 1191 buys 11d
+    },
+    # ── v7.8.26: Crypto 15-min UD specialists ────────────────────────────────
+    {
+        "name": "CryptoUD15m-78c3",
+        "wallet": "0x78c381f71bbcf5947d9ab2c92a35b0ed8a8e0873",
+        "roi": None, "priority": 2,  # v7.8.30: BENCHED — confirmed MM: 8/26 conditionIds both-sides (30.8%), sell=28.3% — ranked 6th by recency (14.8h last buy vs 5 fresher primaries)
+        "archetype": "specialist",
+        "stake_mult": 1.0, "max_stake": 15.0,
+        "categories": [],
+        "blocked_categories": [],
+        "bypass_global_block": False,
+        "crypto_15min_ud_only": True,
+        "note": "CryptoUD15m-78c3 | v7.8.26 new | Full 187d=98.1%WR(207mkts) | Recent 30d=96.2%WR(612mkts) | avg_px=0.693 | sell=0.1% | 16 active days | crypto 15-min UD specialist",
+    },
+    {
+        "name": "CryptoUD15m-e12f",
+        "wallet": "0xe12fba63efebb23ff0da61759c352bfbed2b0c56",
+        "roi": None, "priority": 2,  # v7.8.29: REMOVED — confirmed dead address (0 activity)
+        "archetype": "specialist",
+        "stake_mult": 1.0, "max_stake": 15.0,
+        "categories": [],
+        "blocked_categories": [],
+        "bypass_global_block": False,
+        "crypto_15min_ud_only": True,
+        "note": "CryptoUD15m-e12f | DEAD — 0 activity confirmed | v7.8.29: benched",
+    },
+    # -- v7.8.30: Crypto 15-min UD specialists -- repair batch --
+    {
+        "name": "CryptoUD15m-b2a5",
+        "wallet": "0xb2a5fce88f4d0547094e4eb9b1ddcd0aae65d07f",
+        "roi": None, "priority": 2,  # v7.8.32: benched — crypto15m abandoned, -4.37% ROI
+        "archetype": "specialist",
+        "stake_mult": 1.0, "max_stake": 15.0,
+        "daily_stop": -30.0,
+        "max_entry_price": 0.85,  # v7.8.31: raised from global 0.70 — allows mid-late directional entries
+        "categories": [],
+        "blocked_categories": [],
+        "bypass_global_block": False,
+        "crypto_15min_ud_only": True,
+        "note": "CryptoUD15m-b2a5 | v7.8.30 | mm=0/255(0%) | avg_px=0.683 r72h=0.705 | sell=0.0% | b72h=131 b7d=338 | BTC directional 49UP/51DOWN",
+    },
+    {
+        "name": "CryptoUD15m-639d",
+        "wallet": "0x639df1ee9bc0f016673bd78609c0bd01e68e4777",
+        "roi": None, "priority": 2,  # v7.8.32: benched — crypto15m abandoned, -4.37% ROI
+        "archetype": "specialist",
+        "stake_mult": 1.0, "max_stake": 15.0,
+        "daily_stop": -30.0,
+        "max_entry_price": 0.85,  # v7.8.31: raised from global 0.70 — allows mid-late directional entries
+        "categories": [],
+        "blocked_categories": [],
+        "bypass_global_block": False,
+        "crypto_15min_ud_only": True,
+        "note": "CryptoUD15m-639d | v7.8.30 | mm=0/202(0%) | avg_px=0.712 r72h=0.712 | sell=0.0% | b72h=352 b7d=352 | BTC directional 48UP/52DOWN",
+    },
+    {
+        "name": "CryptoUD15m-5e62",
+        "wallet": "0x5e62347cb43a0ad2d11be5678cd70f96ede80792",
+        "roi": None, "priority": 2,  # v7.8.32: benched — crypto15m abandoned, -4.37% ROI
+        "archetype": "specialist",
+        "stake_mult": 1.0, "max_stake": 15.0,
+        "daily_stop": -30.0,
+        "max_entry_price": 0.85,  # v7.8.31: raised from global 0.70 — allows mid-late directional entries
+        "categories": [],
+        "blocked_categories": [],
+        "bypass_global_block": False,
+        "crypto_15min_ud_only": True,
+        "note": "CryptoUD15m-5e62 | v7.8.30 | mm=0/124(0%) | avg_px=0.703 r72h=0.707 | sell=10.2% (elevated; watch) | b72h=329 b7d=421 | BTC directional",
+    },
+    {
+        "name": "CryptoUD15m-a3ba",
+        "wallet": "0xa3bac9ce2d9ee47ff652c409d5d3e9e75558991e",
+        "roi": None, "priority": 2,  # v7.8.32: benched — crypto15m abandoned, -4.37% ROI
+        "archetype": "specialist",
+        "stake_mult": 1.0, "max_stake": 15.0,
+        "daily_stop": -30.0,
+        "max_entry_price": 0.85,  # v7.8.31: raised from global 0.70 — allows mid-late directional entries
+        "categories": [],
+        "blocked_categories": [],
+        "bypass_global_block": False,
+        "crypto_15min_ud_only": True,
+        "note": "CryptoUD15m-a3ba | v7.8.30 | mm=0/124(0%) | avg_px=0.756 r72h=0.763 | sell=2.2% | b72h=128 b7d=132 | BTC directional 62UP/38DOWN",
+    },
+        
+    {
+        "name": "0x75f3b857",
+        "wallet": "0x75f3b857f3c66f8307418e64df6b49d1b0150e78",
+        "roi": None, "priority": 1,
+        "archetype": "generalist",
+        "stake_mult": 0.7, "max_stake": 15.0,
+        "note": "Auto-added by scanner v1.6 | score=89.5 | 100r 99%WR | sports=95%",
+    },
+    
+    {
+        "name": "0x7820d8c4",
+        "wallet": "0x7820d8c45f1b47dc466967f50f5e05f4d8b40b73",
+        "roi": None, "priority": 1,
+        "archetype": "generalist",
+        "stake_mult": 0.7, "max_stake": 15.0,
+        "note": "Auto-added by scanner v1.6 | score=85.3 | 99r 100%WR | sports=93%",
+    },
+    
+    {
+        "name": "0x7f51b350",
+        "wallet": "0x7f51b3507da153925151880006c364cf5d887b9e",
+        "roi": None, "priority": 1,
+        "archetype": "generalist",
+        "stake_mult": 0.7, "max_stake": 15.0,
+        "note": "Auto-added by scanner v1.6 | score=92.0 | 39r 90%WR | sports=77%",
+    },
+    
+    {
+        "name": "0x03411893",
+        "wallet": "0x03411893dcc09acd277fd46396a01de2af24a679",
+        "roi": None, "priority": 1,
+        "archetype": "generalist",
+        "stake_mult": 0.7, "max_stake": 15.0,
+        "note": "Auto-added by scanner v1.6 | score=85.7 | 99r 99%WR | sports=84%",
+    },
+    
+    {
+        "name": "0x76095d48",
+        "wallet": "0x76095d4875424a627ded761421576a56608b4094",
+        "roi": None, "priority": 1,
+        "archetype": "generalist",
+        "stake_mult": 0.7, "max_stake": 15.0,
+        "note": "Auto-added by scanner v1.6 | score=86.1 | 69r 100%WR | sports=43%",
+    },
+    # END_TRADERS
 
     # ── REMOVED v6.4 ──────────────────────────────────────────────────────────
     # BAdiosB          — geopolitical specialist, avg $0.925, 0% sports. No copy edge.
@@ -648,6 +1194,17 @@ TRADERS = [
     # 0x6a57D2          — 28.3/d (exceeds MAX_FREQ_PER_DAY), bot concentration.
     # C.SIN             — 33.2/d, 0 resolved positions, crypto markets.
 ]
+
+# ── PER-TRADER ENTRY CEILING OVERRIDES ───────────────────────────────────────
+# v7.8.15: Traders can define max_entry_price in their config to override the
+# global MAX_ENTRY_PRICE ceiling (0.85).  Only applies to that specific trader.
+# All other traders continue to use MAX_ENTRY_PRICE unchanged.
+# Use surgically for specialists whose edge is proven at high entry prices.
+TRADER_ENTRY_OVERRIDES: dict = {
+    t["name"]: t["max_entry_price"]
+    for t in TRADERS
+    if "max_entry_price" in t
+}
 
 # ── CATEGORY KEYWORDS ─────────────────────────────────────────────────────────
 CATEGORY_KEYWORDS = {
@@ -676,6 +1233,9 @@ CATEGORY_KEYWORDS = {
         "esports", "esl", "blast", "faceit", "cct europe", "a1 gaming",
         "iem", "major", "pgl", "navi", "team liquid", "faze", "g2 esports",
         "astralis", "nip", "vitality", "heroic", "natus vincere",
+    ],
+    "dota2": [  # v7.8.24: per-trader block support for bigwhale1337
+        "dota", "dota 2", "dota2", "vici gaming",
     ],
     "politics": [
         "trump", "election", "president", "democrat", "republican", "senate", "congress",
@@ -885,6 +1445,33 @@ def save_positions(positions):
             json.dump(positions, f, indent=2)
     except Exception as e:
         log(f"  ⚠️ Could not save positions: {e}", "WARN")
+
+def _dedup_check_and_claim(trader_name, trader_ts, conditionId, token_id):
+    """
+    v7.8.17: Cross-process order dedup guard.
+    Returns True (skip order) if the same signal was already fired within _DEDUP_TTL seconds.
+    Writes a file-based claim on first call so concurrent bot processes see the same key.
+    Fail-open: any read/write error → returns False (allow order, avoid silent skips).
+    """
+    key = f"{trader_name}|{trader_ts}|{conditionId[:22]}|{token_id[:22]}"
+    now = time.time()
+    try:
+        data = {}
+        if DEDUP_FILE.exists():
+            try:
+                data = json.loads(DEDUP_FILE.read_text())
+            except Exception:
+                data = {}
+        # Prune entries older than _DEDUP_TTL
+        data = {k: v for k, v in data.items() if now - v < _DEDUP_TTL}
+        if key in data:
+            return True   # already fired by this or another process
+        data[key] = now
+        DEDUP_FILE.write_text(json.dumps(data))
+        return False
+    except Exception as _e:
+        log(f"  ⚠️  Dedup file error: {_e} — fail-open (allowing order)", "WARN")
+        return False
 
 def get_market_end_days(token_id):
     """
@@ -1102,9 +1689,10 @@ class RiskManager:
     def check(self, token_id, stake, signal_price, live_price, trader_name=""):
         self._check_day_reset()
 
-        # 1. Near-resolved price ceiling
-        if signal_price >= MAX_ENTRY_PRICE:
-            return False, f"Price ceiling: signal ${signal_price:.3f} ≥ ${MAX_ENTRY_PRICE}"
+        # 1. Near-resolved price ceiling (v7.8.15: per-trader override supported)
+        _entry_ceil = TRADER_ENTRY_OVERRIDES.get(trader_name, MAX_ENTRY_PRICE)
+        if signal_price >= _entry_ceil:
+            return False, f"Price ceiling: signal {signal_price:.3f} ≥ {_entry_ceil:.3f} [{trader_name or 'global'}]"
 
         # 2. Slippage check
         if signal_price > 0 and live_price > 0:
@@ -1408,14 +1996,135 @@ def execute_group(trader, acts, client, positions, edge_tracker):
 
     # ── BUY path ───────────────────────────────────────────────────────────────
 
+    # v7.8.16: Opposite-side conflict guard — same conditionId + different token_id = REJECT
+    # Prevents two different traders from pulling us onto both sides of the same market.
+    # YES token and NO token have different token_ids but share the same conditionId.
+    # market_exposure and positions are both keyed by token_id, so without this check
+    # the bot can silently hold both sides (guaranteed fee loss).
+    _inc_cid = first["conditionId"]
+    for _held_tid in list(positions.keys()):
+        if _held_tid.endswith("_meta"):
+            continue
+        _held_meta = positions.get(f"{_held_tid}_meta", {})
+        _held_cid  = _held_meta.get("conditionId", "")
+        if _held_cid and _held_cid == _inc_cid and _held_tid != token_id:
+            _held_outcome = _held_meta.get("outcome", _held_tid[:20])
+            _opp_reason = (
+                f"Opposite-side conflict: already hold '{_held_outcome}' "
+                f"({_held_tid[:20]}…) on cond={_inc_cid[:22]}… — "
+                f"rejecting {outcome} ({token_id[:20]}…) from {trader['name']}"
+            )
+            log(f"  🚫 {_opp_reason}", "WARN")
+            write_log({
+                "ts": datetime.now(timezone.utc).isoformat(), "trader": trader["name"],
+                "action": "SKIPPED", "reason": _opp_reason,
+                "token_id": token_id, "side": side, "signal_price": sig_price,
+            })
+            return
+
+    # v7.8.27: One-flat-entry rule for crypto15m wallets — block ALL same-market repeats
+    # conditionId is available from first["conditionId"] (_inc_cid already set above).
+    # Same token_id = duplicate entry (same side already held).
+    # Different token_id but same conditionId = opposite-side (already caught by v7.8.16 for
+    # all traders; this block adds a named log tag specific to crypto15m for clarity).
+    # Primary guard: fires before any sizing/stake calculation.
+    if trader.get("crypto_15min_ud_only"):
+        for _c15m_tid in list(positions.keys()):
+            if _c15m_tid.endswith("_meta"):
+                continue
+            _c15m_meta = positions.get(f"{_c15m_tid}_meta", {})
+            _c15m_trader = _c15m_meta.get("trader", "")
+            # Only check positions owned by this specific crypto15m wallet
+            if _c15m_trader and _c15m_trader != trader["name"]:
+                continue
+            _c15m_cid = _c15m_meta.get("conditionId", "")
+            if not _c15m_cid or _c15m_cid != _inc_cid:
+                continue
+            if _c15m_tid == token_id:
+                # Same token — duplicate entry on same side
+                _dup_reason = (
+                    f"FLAT_ENTRY_DUPLICATE: {trader['name']} already has position on "
+                    f"token {token_id[:20]}… (conditionId={_inc_cid[:22]}…) — "
+                    f"one flat entry per market only (v7.8.27)"
+                )
+                log(f"  🚫 [DUPLICATE_MARKET_BLOCK] {trader['name']} | {title[:55]}", "WARN")
+                write_log({
+                    "ts": datetime.now(timezone.utc).isoformat(),
+                    "trader": trader["name"],
+                    "action": "SKIPPED",
+                    "reason": _dup_reason,
+                    "token_id": token_id,
+                    "conditionId": _inc_cid,
+                    "side": side,
+                    "signal_price": sig_price,
+                })
+                return
+            else:
+                # Different token, same conditionId — opposite side
+                _c15m_opp_reason = (
+                    f"FLAT_ENTRY_OPPOSITE_SIDE: {trader['name']} already holds "
+                    f"{_c15m_tid[:20]}… on conditionId={_inc_cid[:22]}… — "
+                    f"refusing opposite side (v7.8.27)"
+                )
+                log(f"  🚫 [OPPOSITE_SIDE_BLOCK] {trader['name']} | {title[:55]}", "WARN")
+                write_log({
+                    "ts": datetime.now(timezone.utc).isoformat(),
+                    "trader": trader["name"],
+                    "action": "SKIPPED",
+                    "reason": _c15m_opp_reason,
+                    "token_id": token_id,
+                    "conditionId": _inc_cid,
+                    "side": side,
+                    "signal_price": sig_price,
+                })
+                return
+
     # v6.0: Global category block — checked BEFORE trader filter
     blocked, blocked_cat = is_globally_blocked(title, trader=trader)
     if blocked:
-        log(f"  🚫 Globally blocked category '{blocked_cat}': {title[:55]}", "WARN")
+        # v7.8.26: Narrow 15-min crypto UD exception for approved wallets
+        if trader.get("crypto_15min_ud_only") and is_15min_crypto_ud(title):
+            # This wallet is approved for 15-min crypto UD only — allow through
+            log(f"  [CRYPTO15M_ALLOW] {trader['name']} | {title[:55]}", "INFO")
+        else:
+            log(f"  🚫 Globally blocked category '{blocked_cat}': {title[:55]}", "WARN")
+            write_log({
+                "ts": datetime.now(timezone.utc).isoformat(), "trader": trader["name"],
+                "action": "SKIPPED", "reason": f"Globally blocked category: {blocked_cat}",
+                "token_id": token_id, "side": side, "signal_price": sig_price,
+            })
+            return
+
+    # v7.8.24: Per-trader category block — checked after global block, before resolution filter
+    # Supports per-trader "blocked_categories" list (blacklist, opposite of "categories" whitelist).
+    _per_trader_blocked = False
+    for _ptb_cat in trader.get("blocked_categories", []):
+        _ptb_kws = CATEGORY_KEYWORDS.get(_ptb_cat, [_ptb_cat])
+        if any(kw in title.lower() for kw in _ptb_kws):
+            _ptb_reason = f"Per-trader blocked category '{_ptb_cat}' for {trader['name']}"
+            log(f"  🚫 {_ptb_reason}: {title[:55]}", "WARN")
+            write_log({
+                "ts": datetime.now(timezone.utc).isoformat(), "trader": trader["name"],
+                "action": "SKIPPED", "reason": _ptb_reason,
+                "token_id": token_id, "side": side, "signal_price": sig_price,
+            })
+            _per_trader_blocked = True
+            break
+    if _per_trader_blocked:
+        return
+
+    # v7.8.26: Enforce 15-min crypto UD exclusivity for approved wallets
+    if trader.get("crypto_15min_ud_only") and not is_15min_crypto_ud(title):
+        _c15m_reason = f"crypto_15min_ud_only gate: '{title[:40]}' is not a 15-min crypto UD market"
+        log(f"  🚫 [CRYPTO15M_GATE] {trader['name']} | {title[:55]}", "WARN")
         write_log({
-            "ts": datetime.now(timezone.utc).isoformat(), "trader": trader["name"],
-            "action": "SKIPPED", "reason": f"Globally blocked category: {blocked_cat}",
-            "token_id": token_id, "side": side, "signal_price": sig_price,
+            "ts": datetime.now(timezone.utc).isoformat(),
+            "trader": trader["name"],
+            "action": "SKIPPED",
+            "reason": _c15m_reason,
+            "token_id": token_id,
+            "side": side,
+            "signal_price": sig_price,
         })
         return
 
@@ -1478,27 +2187,93 @@ def execute_group(trader, acts, client, positions, edge_tracker):
     trader_cap    = trader.get("max_stake", MAX_STAKE_PER_TRADE)
     effective_stake = min(round(price_adj_stake + sizing_bonus, 2), trader_cap, MAX_STAKE_PER_TRADE)
 
-    if sizing_count > 0:
+    # v7.8.27: Flat $15 fixed entry for crypto15m wallets — override all sizing/price/edge/mult math
+    # Bypasses calculate_stake(), price_factor, edge_factor, sizing_bonus, confluence boost, and
+    # whale guard. Result is always exactly $15.00 for the first (and only) entry on this market.
+    # The v7.8.25 notional cap backstop will block any hypothetical second entry:
+    #   first entry: remaining_budget = $15 - $0 = $15 → allowed
+    #   second entry: remaining_budget = $15 - $15 = $0 ≤ $0.50 → NOTIONAL_CAP_BLOCKED
+    if trader.get("crypto_15min_ud_only"):
+        effective_stake = 15.0
+        log(
+            f"  [FLAT15_ENTRY] {trader['name']} | fixed $15.00 | market={title[:45]}",
+            "INFO",
+        )
+
+    if sizing_count > 0 and not trader.get("crypto_15min_ud_only"):
         log(
             f"  📈 Sizing up ×{sizing_count+1}: ${price_adj_stake:.2f} price-adj "
             f"+ ${sizing_bonus:.2f} bonus = ${effective_stake:.2f}"
         )
 
     # v5.4: Confluence boost (on top of everything, still capped by trader max)
-    if n_confluent >= CONFLUENCE_THRESHOLD:
+    # v7.8.27: Skipped for crypto15m wallets — flat $15 is already final, no boost allowed
+    if n_confluent >= CONFLUENCE_THRESHOLD and not trader.get("crypto_15min_ud_only"):
         boosted = min(round(effective_stake * CONFLUENCE_MULTIPLIER, 2), trader_cap, MAX_STAKE_PER_TRADE)
         log(
             f"  🔥 CONFLUENCE: {n_confluent} traders → ${effective_stake:.2f} "
             f"× {CONFLUENCE_MULTIPLIER} = ${boosted:.2f}",
         )
         effective_stake = boosted
-    elif n_confluent == 2:
+    elif n_confluent == 2 and not trader.get("crypto_15min_ud_only"):
         log(f"  📶 2-trader alignment ({', '.join(sorted(active_names))}) — watching for 3rd")
 
     # Whale guard
-    if total_usdc > MAX_WHALE_ORIGINAL and effective_stake > price_adj_stake:
+    # v7.8.27: Skipped for crypto15m wallets — flat $15 is final; price_adj_stake not meaningful here
+    if total_usdc > MAX_WHALE_ORIGINAL and effective_stake > price_adj_stake and not trader.get("crypto_15min_ud_only"):
         log(f"  🐋 Whale trade (${total_usdc:,.0f}) — suppressing boost to ${price_adj_stake:.2f}")
         effective_stake = price_adj_stake
+
+    # v7.8.25: Per-token cumulative notional cap
+    # Prevents sizing-up from exceeding trader max_stake total across all buys on the same token.
+    # Root cause of 2026-03-18 Clippers $40 incident: two separate source txns on same token,
+    # each individually capped at $20, combined to $40. This cap closes that gap.
+    # Logic: remaining_budget = trader_cap - already_deployed_on_this_token
+    #   - If remaining_budget <= $0.50 → fully block, log NOTIONAL_CAP_BLOCKED
+    #   - If effective_stake > remaining_budget → clip to remaining, log NOTIONAL_CAP_CLIPPED
+    #   - If first buy (already_deployed=0) → no change, passes through cleanly
+    _already_deployed = positions.get(f"{token_id}_meta", {}).get("stake", 0.0)
+    _remaining_budget = round(trader_cap - _already_deployed, 2)
+    if _already_deployed > 0:
+        log(
+            f"  📊 [NOTIONAL_CAP] {trader['name']} | already=${_already_deployed:.2f} "
+            f"cap=${trader_cap:.2f} budget=${_remaining_budget:.2f} "
+            f"requested=${effective_stake:.2f}",
+            "INFO",
+        )
+    if _remaining_budget <= 0.50:
+        _block_reason = (
+            f"Per-token notional cap: ${_already_deployed:.2f} already deployed on "
+            f"{token_id[:20]}… (cap=${trader_cap:.2f}) — "
+            f"${effective_stake:.2f} requested, $0 budget remaining"
+        )
+        log(f"  🔒 [NOTIONAL_CAP_BLOCKED] {trader['name']} | {title[:55]}", "RISK")
+        log(f"     already=${_already_deployed:.2f} cap=${trader_cap:.2f} requested=${effective_stake:.2f} allowed=$0.00", "RISK")
+        write_log({
+            "ts": datetime.now(timezone.utc).isoformat(),
+            "trader": trader["name"],
+            "action": "SKIPPED",
+            "reason": _block_reason,
+            "token_id": token_id,
+            "side": side,
+            "signal_price": sig_price,
+            "already_deployed": _already_deployed,
+            "trader_cap": trader_cap,
+            "requested_stake": effective_stake,
+            "allowed_stake": 0.0,
+        })
+        return
+    if effective_stake > _remaining_budget:
+        log(
+            f"  ✂️  [NOTIONAL_CAP_CLIPPED] {trader['name']} | {title[:55]}",
+            "WARN",
+        )
+        log(
+            f"     already=${_already_deployed:.2f} cap=${trader_cap:.2f} "
+            f"requested=${effective_stake:.2f} → clipped to ${_remaining_budget:.2f}",
+            "WARN",
+        )
+        effective_stake = _remaining_budget
 
     # Order book: live price + spread check
     live_price = sig_price
@@ -1538,6 +2313,21 @@ def execute_group(trader, acts, client, positions, edge_tracker):
         log(f"  ⛔ CLOB dry (${_live_usdc:.2f} < ${effective_stake:.2f}) — skip buy until funded", "WARN")
         return
 
+    # v7.8.17: Cross-process dedup guard — rejects duplicate signals fired by concurrent bot instances
+    if side == "BUY" and _dedup_check_and_claim(trader["name"], last_ts, first["conditionId"], token_id):
+        log(
+            f"  🔒 DEDUP: {trader['name']} already filed {token_id[:20]}… "
+            f"(trader_ts={last_ts}) within {_DEDUP_TTL}s — skip duplicate order (v7.8.17)",
+            "WARN",
+        )
+        write_log({
+            "ts": datetime.now(timezone.utc).isoformat(), "trader": trader["name"],
+            "action": "DEDUP_SKIP", "reason": "cross-process duplicate signal",
+            "token_id": token_id, "side": side, "trader_ts": last_ts,
+            "signal_price": sig_price, "live_price": live_price,
+        })
+        return
+
     shares = 0.0  # v7.6.0: init so fill_price available in write_log regardless of fill path
     ok, resp = place_order(client, token_id, side, effective_stake, label)
     risk.record(token_id, effective_stake, ok, side=side, trader_name=trader["name"])
@@ -1563,6 +2353,8 @@ def execute_group(trader, acts, client, positions, edge_tracker):
             meta["stake"]         = meta.get("stake", 0) + effective_stake
             if "opened_ts" not in meta:
                 meta["opened_ts"] = datetime.now(timezone.utc).isoformat()
+            meta["conditionId"]   = first["conditionId"]   # v7.8.16: opposite-side conflict detection
+            meta["outcome"]       = outcome                 # v7.8.16: human-readable label for conflict log
             positions[f"{token_id}_meta"] = meta
             log(f"  📦 Position: +{shares:.4f} shares → {positions[token_id]:.4f} total | {token_id[:20]}...")
             save_positions(positions)
@@ -1970,14 +2762,14 @@ def _neg_risk_redeem(token_id: str, shares: float, condition_id: str) -> bool:
         _nc    = _safe.functions.nonce().call()
         _gp    = max(int(_w3.eth.gas_price * 1.4), _w3.to_wei("120", "gwei"))
         _th    = _safe.functions.getTransactionHash(NRA, 0, _cd, 0, 0, 0, 0, ZERO, ZERO, _nc).call()
-        _sig   = Account._sign_hash(_th, PRIVATE_KEY)
+        _sig   = _w3.eth.account._sign_hash(_th, PRIVATE_KEY)   # v7.8.19: fix NameError — Account class was never imported; use _w3.eth.account (matches _ctf_redeem pattern)
         log(f"  [CTF-NR] nonce={_nc} gp={_gp/1e9:.1f}gwei hash={_th.hex()[:16]}…")
 
         if DRY_RUN:
             log("  [CTF-NR] DRY RUN — skip execTransaction")
             return False
 
-        _acc = Account.from_key(PRIVATE_KEY)
+        _acc = _w3.eth.account.from_key(PRIVATE_KEY)   # v7.8.19: same fix
         _tx  = _safe.functions.execTransaction(
             NRA, 0, _cd, 0, 0, 0, 0, ZERO, ZERO, _sig.signature
         ).build_transaction({
@@ -2159,6 +2951,97 @@ def _ctf_redeem(token_id: str, shares: float, condition_id: str, index_sets: lis
 
     log("  [CTF] All RPCs exhausted — CTF redemption failed this cycle", "WARN")
     return False
+
+
+def run_resolution_cycle(positions: dict, client) -> float:
+    """
+    v7.8.31: Immediate redeem/cleanup for resolved crypto15m positions.
+    Runs every 3 polls (~9s). Uses Polymarket data API (same source as try_claim)
+    to detect resolution, then:
+      WIN  -> attempt CTF redeem immediately -> [REDEEM_SUCCESS] or [REDEEM_FAIL]
+      LOSS -> log [RESOLVED_LOSS] + [TERMINAL_CLEANUP] -> remove from active tracking
+    Returns total USDC freed this cycle.
+    """
+    import urllib.request as _ureq
+    from datetime import datetime, timezone as _tz
+
+    now_utc = datetime.now(_tz.utc)
+    to_remove: list = []
+    freed_usdc = 0.0
+
+    # Batch-fetch funder positions from Polymarket data API (same as try_claim)
+    _api_resolved: dict = {}  # token_id -> {win: bool, value: float, redeemable: bool}
+    try:
+        _url = ("https://data-api.polymarket.com/positions"
+                "?user=%s&sizeThreshold=0.001" % POLY_FUNDER_ADDRESS)
+        _req_obj = _ureq.Request(_url, headers={"User-Agent": "copytrade-bot/7.8.31"})
+        _api_pos = json.loads(_ureq.urlopen(_req_obj, timeout=10).read())
+        for _ap in _api_pos:
+            _tid = str(_ap.get("asset", ""))
+            _val = float(_ap.get("currentValue", 0) or 0)
+            _red = bool(_ap.get("redeemable", False))
+            if _red:
+                _api_resolved[_tid] = {"win": _val > 0.01, "value": _val}
+    except Exception as _e:
+        log(f"  [RES_CYCLE] API fetch failed: {_e}", "WARN")
+        return 0.0
+
+    for token_id, pos_data in list(positions.items()):
+        if token_id.endswith("_meta"):
+            continue
+        meta = positions.get(f"{token_id}_meta", {})
+        trader = meta.get("trader", "")
+        # Only process crypto15m positions in this fast cycle
+        if "CryptoUD15m" not in trader:
+            continue
+        if token_id not in _api_resolved:
+            continue  # not yet resolved
+
+        resolved_info = _api_resolved[token_id]
+        stake = float(meta.get("stake", 0))
+        title = str(meta.get("title", ""))[:55]
+        condition_id = meta.get("conditionId", "")
+        index_sets = meta.get("index_sets")  # None for neg-risk, list for CTF
+
+        if resolved_info["win"]:
+            shares = float(pos_data) if not isinstance(pos_data, dict) else float(pos_data.get("shares", 0))
+            log(f"  [RESOLVED_WIN] {trader} | {title} | stake=${stake:.2f} shares={shares:.2f}", "INFO")
+            write_log({
+                "ts": now_utc.isoformat(), "trader": trader, "action": "RESOLVED_WIN",
+                "token_id": token_id, "title": title, "stake": stake,
+            })
+            try:
+                redeem_ok = _ctf_redeem(token_id, shares, condition_id, index_sets)
+                if redeem_ok:
+                    log(f"  [REDEEM_SUCCESS] {trader} | {title} | freed~${shares:.2f}", "INFO")
+                    write_log({"ts": now_utc.isoformat(), "trader": trader, "action": "REDEEM_SUCCESS",
+                               "token_id": token_id, "title": title, "shares": shares})
+                    freed_usdc += shares
+                    to_remove.append(token_id)
+                else:
+                    log(f"  [REDEEM_FAIL] {trader} | {title} — will retry next cycle", "WARN")
+                    write_log({"ts": now_utc.isoformat(), "trader": trader, "action": "REDEEM_FAIL",
+                               "token_id": token_id, "title": title})
+            except Exception as _re_err:
+                log(f"  [REDEEM_FAIL] {trader} | {title} | err={_re_err}", "WARN")
+        else:
+            # We held the losing token — terminal cleanup
+            log(f"  [RESOLVED_LOSS] {trader} | {title} | stake=${stake:.2f} lost", "WARN")
+            write_log({
+                "ts": now_utc.isoformat(), "trader": trader, "action": "RESOLVED_LOSS",
+                "token_id": token_id, "title": title, "stake": stake,
+            })
+            log(f"  [TERMINAL_CLEANUP] removing {token_id[:22]}... from active state", "INFO")
+            to_remove.append(token_id)
+
+    if to_remove:
+        for tid in to_remove:
+            positions.pop(tid, None)
+            positions.pop(f"{tid}_meta", None)
+        save_positions(positions)
+        log(f"  [RESOLUTION_CYCLE] cleaned {len(to_remove)} positions, freed~${freed_usdc:.2f} USDC", "INFO")
+
+    return freed_usdc
 
 
 def try_claim(client, positions, trader_map, edge_tracker):
@@ -2701,6 +3584,29 @@ sell_mirror = SellMirror()
 # ── MAIN ──────────────────────────────────────────────────────────────────────
 
 def main():
+    # v7.8.17: PID file guard — kill any stale/duplicate bot before starting
+    import signal as _signal, atexit as _atexit
+    _pid_file = Path(__file__).parent / ".bot.pid"
+    if _pid_file.exists():
+        try:
+            _old_pid = int(_pid_file.read_text().strip())
+            if _old_pid != os.getpid():
+                os.kill(_old_pid, _signal.SIGTERM)
+                log(f"  ⚠️  Killed stale bot PID={_old_pid} (from .bot.pid) — ensuring single instance")
+                time.sleep(2)
+        except (ProcessLookupError, ValueError):
+            pass  # process already dead or file had bad content
+        except Exception as _pe:
+            log(f"  ⚠️  PID file kill failed: {_pe}", "WARN")
+    _pid_file.write_text(str(os.getpid()))
+    _atexit.register(lambda: _pid_file.unlink(missing_ok=True))
+    # Clear stale dedup file from previous run
+    try:
+        if DEDUP_FILE.exists():
+            DEDUP_FILE.unlink()
+    except Exception:
+        pass
+
     mode    = "DRY RUN 🔶" if DRY_RUN else "LIVE 🟢"
     traders = [t for t in TRADERS if t["priority"] <= PRIORITY_LEVEL]
     trader_map = {t["name"]: t for t in traders}
@@ -2727,7 +3633,10 @@ def main():
     log(f"  Max slippage       : {MAX_SLIPPAGE:.0%}")
     log(f"  Staleness cutoff   : {STALENESS_CUTOFF}s")
     log(f"  Max spread         : ${MAX_SPREAD:.3f}")
-    log(f"  Max entry price    : ${MAX_ENTRY_PRICE:.2f}  (fee kills margin above this)")
+    log(f"  Max entry price    : {MAX_ENTRY_PRICE:.2f}  (global default — fee kills margin above this)")
+    if TRADER_ENTRY_OVERRIDES:
+        for _tn, _ceil in TRADER_ENTRY_OVERRIDES.items():
+            log(f"  Entry override     : {_tn} → {_ceil:.3f}  (v7.8.15 per-trader override)")
     log(f"  Max per market     : ${MAX_PER_MARKET}")
     log(f"  Max resolution     : {MAX_RESOLUTION_DAYS}d  (v6.0: skip long-term capital traps)")
     log(f"  Blocked categories : {', '.join(GLOBALLY_BLOCKED_CATEGORIES)}  (all traders)")
@@ -2896,6 +3805,13 @@ def main():
                         loss_sweeper(client, positions, edge_tracker)  # v7.6.5: pass edge_tracker
                 except Exception as sme:
                     log(f"sell_mirror error: {sme}", "ERROR")
+
+            # ── 3.8. Fast resolution cycle for crypto15m (every 3 polls ~9s) ──────
+            if poll_count % 3 == 0:
+                try:
+                    run_resolution_cycle(positions, client)
+                except Exception as _rce:
+                    log(f"run_resolution_cycle error: {_rce}", "ERROR")
 
             # ── 4. Auto-claim (every 20 polls ~10 min — CTF + SELL fallback) ─────
             if poll_count % 20 == 0:

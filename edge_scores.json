@@ -24,10 +24,10 @@
     "_trust_note": "W/L correct (57W/4L confirmed). total_staked corrected: phantom loop (Flyers 208x+Kartal 113x) stake subtracted. total_proceeds systematically underestimated: many CLOB-path wins recorded $0 due to delayed-SELL blindness (status:delayed, no takingAmount). True ROI better than shown."
   },
   "Signal47-Bets": {
-    "wins": 54,
-    "losses": 1,
-    "total_staked": 813.36,
-    "total_proceeds": 1378.5,
+    "wins": 55,
+    "losses": 3,
+    "total_staked": 881.36,
+    "total_proceeds": 1379.5817,
     "_trust": "clean",
     "_trust_note": "Uncontaminated."
   },
@@ -56,10 +56,10 @@
     "_trust_note": "Uncontaminated. hold-to-resolution trader. Proceeds from CTF/NegRisk path."
   },
   "Unwieldy-Forage": {
-    "wins": 159,
-    "losses": 8,
-    "total_staked": 1712.87,
-    "total_proceeds": 3334.934,
+    "wins": 165,
+    "losses": 10,
+    "total_staked": 1836.67,
+    "total_proceeds": 3531.5467,
     "_trust": "clean",
     "_trust_note": "Uncontaminated. Proceeds from CTF/NegRisk path."
   },
@@ -112,10 +112,10 @@
     "_trust_note": "Active. Small sample."
   },
   "recon-recovery": {
-    "wins": 12,
+    "wins": 33,
     "losses": 0,
-    "total_staked": 196.256874,
-    "total_proceeds": 459.49325799999997,
+    "total_staked": 486.245885,
+    "total_proceeds": 749.482269,
     "_trust": "clean",
     "_trust_note": "No known contamination."
   },
@@ -142,5 +142,101 @@
     "total_proceeds": 20.5594,
     "_trust": "clean",
     "_trust_note": "No known contamination."
+  },
+  "chenpengzao": {
+    "wins": 3,
+    "losses": 4,
+    "total_staked": 40.56,
+    "total_proceeds": 21.0509
+  },
+  "NBA-9c88": {
+    "wins": 1,
+    "losses": 2,
+    "total_staked": 17.22,
+    "total_proceeds": 7.3127
+  },
+  "gem62-NBA": {
+    "wins": 2,
+    "losses": 1,
+    "total_staked": 21.16,
+    "total_proceeds": 14.6951
+  },
+  "bigwhale1337": {
+    "wins": 1,
+    "losses": 0,
+    "total_staked": 10.41,
+    "total_proceeds": 25.390242
+  },
+  "Sport-dd57": {
+    "wins": 3,
+    "losses": 2,
+    "total_staked": 31.009999999999998,
+    "total_proceeds": 69.5205
+  },
+  "SoccerSharp-f23c": {
+    "wins": 1,
+    "losses": 1,
+    "total_staked": 13.870000000000001,
+    "total_proceeds": 0.0184
+  },
+  "NBAEdge-aeab": {
+    "wins": 5,
+    "losses": 4,
+    "total_staked": 81.51,
+    "total_proceeds": 92.37919999999998
+  },
+  "WeatherSharp-65f": {
+    "wins": 5,
+    "losses": 7,
+    "total_staked": 26.89,
+    "total_proceeds": 11.3308
+  },
+  "BroadSports-3ad1": {
+    "wins": 5,
+    "losses": 5,
+    "total_staked": 94.03999999999999,
+    "total_proceeds": 180.1896
+  },
+  "SportOdds-26f2": {
+    "wins": 0,
+    "losses": 1,
+    "total_staked": 5.4,
+    "total_proceeds": 0.0
+  },
+  "0x8ae3a587": {
+    "wins": 3,
+    "losses": 0,
+    "total_staked": 24.0,
+    "total_proceeds": 45.542253
+  },
+  "CryptoUD15m-3123": {
+    "wins": 1,
+    "losses": 1,
+    "total_staked": 30.0,
+    "total_proceeds": 21.004594
+  },
+  "CryptoUD15m-b2a5": {
+    "wins": 1,
+    "losses": 0,
+    "total_staked": 15.0,
+    "total_proceeds": 20.348384
+  },
+  "CryptoUD15m-5e62": {
+    "wins": 4,
+    "losses": 0,
+    "total_staked": 60.0,
+    "total_proceeds": 73.495355
+  },
+  "CryptoUD15m-a3ba": {
+    "wins": 3,
+    "losses": 0,
+    "total_staked": 45.0,
+    "total_proceeds": 59.870180999999995
+  },
+  "0x75f3b857": {
+    "wins": 8,
+    "losses": 1,
+    "total_staked": 104.79,
+    "total_proceeds": 63.060700000000004
   }
 }

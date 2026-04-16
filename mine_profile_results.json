@@ -1,0 +1,168 @@
+{
+  "viable": [
+    {
+      "wallet": "0x146703a8a73ae1dff0f84ba44c45d878858a4372",
+      "resolved": 96,
+      "wins": 95,
+      "losses": 1,
+      "win_rate": 0.9895833333333334,
+      "avg_stake": 3447.028905889535,
+      "avg_price": 0.5342857625546706,
+      "age_days": 20.338456924789483,
+      "last_h": 1.2526884171697827,
+      "b24": 6,
+      "b72": 16,
+      "crypto_pct": 0.0,
+      "blocked_pct": 0.06395348837209303,
+      "cats": {
+        "nhl": 29,
+        "other": 90,
+        "soccer": 20,
+        "blocked": 11,
+        "nba": 19,
+        "weather": 1,
+        "tennis": 2
+      },
+      "titles": [
+        "Avalanche vs. Kraken",
+        "Predators vs. Canucks",
+        "Sharks vs. Bruins",
+        "Ducks vs. Maple Leafs",
+        "Will RC Strasbourg Alsace win on 2026-03-12?"
+      ],
+      "total_buys": 172
+    },
+    {
+      "wallet": "0x503f8098201ff4c9d5ec1f325b71a2f36a5fec57",
+      "resolved": 99,
+      "wins": 99,
+      "losses": 0,
+      "win_rate": 1.0,
+      "avg_stake": 11.616078403409091,
+      "avg_price": 0.6822203339389555,
+      "age_days": 52.559403807576054,
+      "last_h": 35.21985804849201,
+      "b24": 0,
+      "b72": 53,
+      "crypto_pct": 0.3068181818181818,
+      "blocked_pct": 0.0,
+      "cats": {
+        "crypto": 54,
+        "nba": 25,
+        "other": 80,
+        "esports": 13,
+        "nhl": 4
+      },
+      "titles": [
+        "XRP Up or Down - March 11, 8:00AM-12:00PM ET",
+        "Ethereum Up or Down - March 11, 8:00AM-12:00PM ET",
+        "Ethereum Up or Down - March 11, 11AM ET",
+        "Solana Up or Down - March 11, 8:00AM-12:00PM ET",
+        "Bitcoin Up or Down - March 11, 11AM ET"
+      ],
+      "total_buys": 176
+    },
+    {
+      "wallet": "0xb2a48372404e6a0bfb6c2f23d715d3acc5a8cf8a",
+      "resolved": 35,
+      "wins": 30,
+      "losses": 5,
+      "win_rate": 0.8571428571428571,
+      "avg_stake": 2844.4155094705884,
+      "avg_price": 0.5241740305972269,
+      "age_days": 11.790962654412896,
+      "last_h": 5.074770372576184,
+      "b24": 22,
+      "b72": 51,
+      "crypto_pct": 0.08088235294117647,
+      "blocked_pct": 0.04411764705882353,
+      "cats": {
+        "nba": 80,
+        "nhl": 3,
+        "other": 21,
+        "crypto": 11,
+        "soccer": 15,
+        "blocked": 6
+      },
+      "titles": [
+        "Spread: Suns (-8.5)",
+        "Spread: Suns (-8.5)",
+        "Spread: Suns (-8.5)",
+        "Spread: Suns (-8.5)",
+        "Rangers vs. Jets"
+      ],
+      "total_buys": 136
+    },
+    {
+      "wallet": "0xafaf83a457ceb6d6778839f67038bd103708572d",
+      "resolved": 41,
+      "wins": 41,
+      "losses": 0,
+      "win_rate": 1.0,
+      "avg_stake": 16.797211918032787,
+      "avg_price": 0.4149745930672992,
+      "age_days": 23.184437384039715,
+      "last_h": 5.0176083280642825,
+      "b24": 3,
+      "b72": 14,
+      "crypto_pct": 0.0,
+      "blocked_pct": 0.0,
+      "cats": {
+        "nba": 25,
+        "weather": 26,
+        "other": 6,
+        "soccer": 4
+      },
+      "titles": [
+        "Clube do Remo vs. Fluminense FC: O/U 3.5",
+        "Will the highest temperature in Ankara be 13\u00b0C on March",
+        "Will ACF Fiorentina win on 2026-03-12?",
+        "Will the highest temperature in Ankara be 14\u00b0C on March",
+        "Will the highest temperature in Ankara be 13\u00b0C on March"
+      ],
+      "total_buys": 61
+    },
+    {
+      "wallet": "0x0799daf859e32ec813845a58249172daee889452",
+      "resolved": 14,
+      "wins": 14,
+      "losses": 0,
+      "win_rate": 1.0,
+      "avg_stake": 70.38723252459016,
+      "avg_price": 0.6042068265255932,
+      "age_days": 576.6835272804234,
+      "last_h": 60.28715473016103,
+      "b24": 0,
+      "b72": 26,
+      "crypto_pct": 0.09836065573770492,
+      "blocked_pct": 0.14754098360655737,
+      "cats": {
+        "tennis": 4,
+        "other": 31,
+        "nba": 24,
+        "esports": 28,
+        "blocked": 18,
+        "crypto": 12,
+        "soccer": 4,
+        "weather": 1
+      },
+      "titles": [
+        "BNP Paribas Open: Joao Fonseca vs Jannik Sinner",
+        "Phoenix: Aleksandar Vukic vs Billy Harris",
+        "Games Total: O/U 2.5",
+        "Counter-Strike: Astralis vs FURIA (BO3) - ESL Pro Leagu",
+        "Counter-Strike: 3DMAX vs Natus Vincere (BO3) - ESL Pro "
+      ],
+      "total_buys": 122
+    }
+  ],
+  "rejected": {
+    "young": 53,
+    "crypto": 6,
+    "low_wr": 7,
+    "no_data": 24,
+    "micro_stake": 3,
+    "no_72h_activity": 1,
+    "dormant": 1
+  }
+}

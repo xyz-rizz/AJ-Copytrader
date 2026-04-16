@@ -1,0 +1,14 @@
+{
+  "run_at": "2026-03-10T12:31:28.258315+00:00",
+  "cids_used": 20,
+  "candidates": 137,
+  "gems": [],
+  "rejects": {
+    "young": 116,
+    "micro": 9,
+    "few_res": 4,
+    "blocked": 5,
+    "no_data": 2,
+    "stale": 1
+  }
+}

@@ -429,7 +429,12 @@ def score_candidate(wallet, name="?"):
     wins = losses = 0
     for p in pos:
         redeemable = p.get("redeemable", False)
-        cur_price  = float(p.get("curPrice") or p.get("currentPrice") or 0.5)
+        # FIX: curPrice=0.0 is falsy in Python — use explicit None check
+        _cp_raw    = p.get("curPrice") if p.get("curPrice") is not None else p.get("currentPrice")
+        try:
+            cur_price  = float(_cp_raw) if _cp_raw is not None else 0.5
+        except (TypeError, ValueError):
+            cur_price  = 0.5
         if redeemable:
             wins += 1
         elif cur_price <= 0.04:

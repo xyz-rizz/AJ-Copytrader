@@ -1,0 +1,205 @@
+================================================================================
+PHASE 2: 15-MIN CRYPTO UP/DOWN WALLET DISCOVERY
+Generated: 2026-03-20T05:06:40.424306+00:00
+Runtime: 119.6 minutes
+================================================================================
+
+--- 1. MARKET UNIVERSE ---
+Family: Polymarket 15-minute crypto Up/Down (slug: *-updown-15m-*)
+Full history span: Sep 13, 2025 – Mar 19, 2026 (187 days)
+Full history markets: 60134
+Last 30 days markets: 13338
+Sampling (full history): Stratified sample of 6000 / 60134 markets (every 10.0th market chronologically)
+Sampling (last 30 days): Stratified sample of 4000 / 13338 markets (every 3.3th market chronologically)
+Assets covered: BTC, ETH, SOL, XRP, BNB, DOGE, HYPE
+
+--- 2. WALLET UNIVERSE ---
+Full history unique wallets seen: 118319
+Last 30 days unique wallets seen: 45851
+Intersection (in both): 34909
+
+Win rate distribution (full history, all wallets):
+    0- 10%: 37039 wallets
+   10- 20%: 1462 wallets
+   20- 30%: 3961 wallets
+   30- 40%: 5800 wallets
+   40- 50%: 3832 wallets
+   50- 60%: 13857 wallets
+   60- 70%: 7591 wallets
+   70- 80%: 4595 wallets
+   80- 90%: 4940 wallets
+   90-100%: 35242 wallets
+
+--- 3. BEST FULL-HISTORY WALLETS (Top 25) ---
+Criteria: >=30 resolved mkts, WR>=65%, no POST_RES_BOT/MM/HIGH_SELL flags
+Wallet                                           W     L      WR   Mkts   AvgPx  SellR  Days Top asset
+------------------------------------------------------------------------------------------------------
+0x0adafbc7be38d6de1b6c8be4a3b50222403b7c7d      38     0  100.0%     75   0.715   0.3%    24 BTC(635)
+0x8c67c1e84c9a6803f21fde0a74da521a265a63fc      41     0  100.0%     55   0.872   0.5%    27 BTC(453)
+0x123e5df60017a2e10801e8158b9c1f6c6e1d40a8      37     0  100.0%     54   0.743  12.6%    26 BTC(107)
+0x65bc3e28093f2d68be531d07356bdf5430976d2e      42     0  100.0%     46   0.865   0.0%    24 BTC(50)
+0xb208484fc39eb302bc9312179a0780272e46ad8d      43     0  100.0%     45   0.891  14.4%    17 BTC(44)
+0xc92399beab72a5709003c05a76ea8e007c5b4afd      28     0  100.0%     45   0.811   4.5%     9 BTC(59)
+0xd8b9e865ea0db5a625ebc1b10a3823865906105b      39     0  100.0%     43   0.877  18.8%    21 BTC(87)
+0x556a44ded4d53243b927371aa044b7e686ee4ac4      40     0  100.0%     40   0.854  44.2%    19 BTC(42)
+0xae315e76322f46fb4f2b0c3766294e403b4f846c      38     0  100.0%     38   0.855  47.4%    18 BTC(38)
+0xdbe1d397f88ee2382753c9f6c4819a176c6d608d      30     0  100.0%     37   0.888   2.3%    12 BTC(32)
+0x2c6e5df64ad37ede72be04403fbaeb87bea84290      37     0  100.0%     37   0.858  47.3%    19 BTC(38)
+0x0b80695802ca47985240147ab1bbe89e0a6ad71e      37     0  100.0%     37   0.857  46.8%    21 BTC(38)
+0xb1f98d5c97bb37ac2e393e621b0e0a58605fe0f2      24     0  100.0%     36   0.823   5.4%     9 XRP(161)
+0xc559a2ccedc0aaaf462675bdb97cc04b308f9239      32     0  100.0%     35   0.819  11.0%     6 BTC(42)
+0xeb694b0cdad4892464661cd1b5d8159599f59c8c      35     0  100.0%     35   0.898   0.0%    10 ETH(14)
+0xdb03644c01ccfb133b1b1dc3cb9ba0f5eba8d693      31     0  100.0%     34   0.886   1.4%    14 ETH(45)
+0x914f933d216326a4c02d430cf9fe39b9c4dfde0a      27     0  100.0%     34   0.853   9.0%     7 BTC(278)
+0x21e65c92023f994655191622d1c293f869b41715      32     0  100.0%     33   0.885  21.2%    18 XRP(20)
+0x00a579180b960e6ca4151ccad88758b48332818d      28     0  100.0%     32   0.877  27.6%     4 ETH(13)
+0x4113dd92bb354d53ff399ef4e5b89a9ce7d79514      28     0  100.0%     30   0.883  15.6%    18 BTC(36)
+0xd5195ed42df99ee643ed7b4bcdf1f5509dde3973      27     0  100.0%     30   0.899   5.8%     6 BTC(40)
+0x54c5819bd9823eefb91b9c30bed5d60090ec2fec      30     0  100.0%     30   0.882   0.0%     5 BTC(61)
+0x6da431ed8af0bea9c7ecff86735951fc88dfd5c2      29     0  100.0%     30   0.891  35.8%     6 BTC(35)
+0x0ef4f5751e67f326d4baef5e19e1d10d08ecf90a     180     1   99.4%    220   0.836   0.0%     9 ETH(85)
+0x19a9267964fc717c29fd572b4e9b3c2eda899d0b     161     1   99.4%    195   0.833   0.0%    11 ETH(119)
+
+  Total qualified (full history): 3513
+
+--- STRICT FULL-HISTORY SHORTLIST (>=80 mkts, WR>=70%) ---
+  0x0ef4f5751e67f326d4baef5e19e1d10d08ecf90a   WR=99.4% (180W/1L/220tot) avg_px=0.836 sell=0.0% days=9 buys=260 ETH(85)+BTC(77)
+  0x19a9267964fc717c29fd572b4e9b3c2eda899d0b   WR=99.4% (161W/1L/195tot) avg_px=0.833 sell=0.0% days=11 buys=228 ETH(119)+BTC(109)
+  0x6f6c8e917638a0cc7d18f4d3f9f5648d80433868   WR=99.4% (160W/1L/195tot) avg_px=0.840 sell=0.0% days=11 buys=229 ETH(120)+BTC(109)
+  0xd5c82cba0d6d15f2c25fd4d3aaecdd351f9b05cd   WR=99.4% (158W/1L/194tot) avg_px=0.833 sell=0.0% days=11 buys=230 ETH(121)+BTC(109)
+  0xd36663c2bb3cb5f349cc2245f8afe87cf4801d9c   WR=99.3% (271W/2L/311tot) avg_px=0.886 sell=0.0% days=42 buys=349 SOL(340)+ETH(7)
+  0xc46963fb28601926da3f1fa2baec22f241abd8e0   WR=98.9% (94W/1L/113tot) avg_px=0.826 sell=0.0% days=9 buys=131 BTC(76)+ETH(55)
+  0x8f22ea6025544f808e54e6fd8a34211d48f5ce7d   WR=98.8% (85W/1L/103tot) avg_px=0.863 sell=0.0% days=30 buys=251 BTC(251)
+  0x9ce0cb7d0163551a7ad8cb5ffe1a821b54e9e9e8   WR=98.8% (83W/1L/108tot) avg_px=0.849 sell=0.0% days=18 buys=143 BTC(143)
+  0x3741719752543d615e76eeb141ed1de4a16c48d0   WR=98.7% (157W/2L/193tot) avg_px=0.833 sell=0.0% days=11 buys=227 ETH(119)+BTC(108)
+  0x1142e81e93e272fff47e1ece549976b784c7a303   WR=98.7% (157W/2L/193tot) avg_px=0.833 sell=0.0% days=11 buys=227 ETH(118)+BTC(109)
+  0x8870cb1dfcedefc1cb900bb40bc374b4fae8538b   WR=98.7% (155W/2L/193tot) avg_px=0.825 sell=0.0% days=11 buys=229 ETH(119)+BTC(110)
+  0x8264dbffbd24b49e29d13351f589ceb3c9270789   WR=98.7% (154W/2L/188tot) avg_px=0.836 sell=0.0% days=11 buys=222 ETH(115)+BTC(107)
+  0xe12fba63efebb23ff0da61759c352bfbed2b0c56   WR=98.7% (75W/1L/142tot) avg_px=0.732 sell=0.0% days=21 buys=561 ETH(561)
+  0xf84d69c85ee8af44895745af9a68bf7f07220d60   WR=98.6% (73W/1L/86tot) avg_px=0.866 sell=0.0% days=7 buys=98 ETH(55)+BTC(43)
+  0xacfe5bbc96fb4976ecc4693997c063c332bfc247   WR=98.6% (363W/5L/438tot) avg_px=0.849 sell=0.9% days=31 buys=508 ETH(149)+BTC(129)
+
+--- 4. BEST LAST-30-DAY WALLETS (Top 25) ---
+Criteria: >=15 resolved, >=5 active days, WR>=65%
+Wallet                                           W     L      WR   Mkts   AvgPx  SellR  Days  T/day
+---------------------------------------------------------------------------------------------------
+0xc85adbdb0915c80e74acea732884f91be1ac899c     188     0  100.0%    266   0.833   0.0%    31   11.5
+0xd2625b6709a6d0ff104ea15b8b9e2d82cfa68753     166     0  100.0%    221   0.862   0.0%    25   11.1
+0x8f22ea6025544f808e54e6fd8a34211d48f5ce7d     193     0  100.0%    214   0.887   0.0%    17   14.4
+0xbabd9272fa242f63dbc5e3ee206ec0d596583335      39     0  100.0%     62   0.739   0.0%     5   42.4
+0xa71b98b8c6d1f8b9fa341204332dff10508c6e95      43     0  100.0%     46   0.841   4.2%    10    5.5
+0xe1c3272e29ff9a3d6ead43203a748028c15e8c84      43     0  100.0%     43   0.885   7.0%     8    5.4
+0x21e65c92023f994655191622d1c293f869b41715      37     0  100.0%     40   0.879  23.8%    10    5.2
+0xe5d160b8b8b503cd04054d49a5e50d50f4c0e748      40     0  100.0%     40   0.892  23.8%    10    4.0
+0xb5b4afc41e40b29830ac2a29f0bca08f81daf4f4      38     0  100.0%     40   0.854  47.1%     6    7.0
+0x8e5eb0db95257f39e28a5e7a1f5536651b5e2b7b      38     0  100.0%     39   0.890   1.7%     5    9.4
+0xe6d33eeb4efc5994205fd91622d25339dee749fb      36     0  100.0%     38   0.894   0.0%     6    7.5
+0x467afb18c5d818619d28cdf0c8cff9c6751bca0a      34     0  100.0%     34   0.888   0.0%     7    4.9
+0xad15cb31c10e550b697ba56ddf95066d4e77acca      31     0  100.0%     31   0.832   0.0%     5    6.2
+0xf7121fbaef670314ed3d8061ff8614e7adfa1bcd      27     0  100.0%     27   0.885   0.0%     7    3.9
+0x609ec717827b3459408510d0ec02f768e7a90bf8      26     0  100.0%     26   0.842  45.4%     5    7.6
+0xd55eef8f64f0879b11d05d3530e42d44af4af0d7      25     0  100.0%     25   0.894   0.0%     5    5.2
+0x0c51d7d4e4430acd3f0a5490812dabcf39a74265      23     0  100.0%     25   0.873   3.6%     7    8.4
+0xbe2a1db023f3c5df49f78880b9b79fef1422c556      15     0  100.0%     24   0.800   2.1%     6    9.2
+0xbe0c3e82f2fc0ea03edffb2edd4a8a77e7692677      18     0  100.0%     21   0.858   7.9%     5    6.4
+0x0585563ed3115611fab3cc0f09277ee894479108      16     0  100.0%     21   0.850   3.1%     5   30.8
+0xd3ee16a0a5ce96a6e51ecd5eee6bdc5c3a6545f0      20     0  100.0%     20   0.887  30.0%     6    3.7
+0x87206214a5178e3db93008dd1e960f5267558d20      19     0  100.0%     19   0.873  46.1%    10    2.3
+0x8f4a584ced1c3b34f682841842b9c37ee71a5cd3      19     0  100.0%     19   0.874  42.1%     7    3.9
+0x0275afb31dd448d0acc25ceba5e7c94326091ea5      19     0  100.0%     19   0.888  44.9%     8    3.2
+0x984111a49c6071f1ade6dfb6190610c481bdc07b      15     0  100.0%     18   0.882   6.5%     8    2.6
+
+  Total qualified (last 30 days): 2450
+
+--- STRICT LAST-30-DAY SHORTLIST (>=30 mkts, >=7 days, WR>=70%) ---
+  0xc85adbdb0915c80e74acea732884f91be1ac899c   WR=100.0% (188W/0L/266tot) avg_px=0.833 sell=0.0% days=31 T/day=11.5 BTC(356)
+  0xd2625b6709a6d0ff104ea15b8b9e2d82cfa68753   WR=100.0% (166W/0L/221tot) avg_px=0.862 sell=0.0% days=25 T/day=11.1 BTC(277)
+  0x8f22ea6025544f808e54e6fd8a34211d48f5ce7d   WR=100.0% (193W/0L/214tot) avg_px=0.887 sell=0.0% days=17 T/day=14.4 BTC(244)
+  0xa71b98b8c6d1f8b9fa341204332dff10508c6e95   WR=100.0% (43W/0L/46tot) avg_px=0.841 sell=4.2% days=10 T/day=5.5 BTC(55)
+  0xe1c3272e29ff9a3d6ead43203a748028c15e8c84   WR=100.0% (43W/0L/43tot) avg_px=0.885 sell=7.0% days=8 T/day=5.4 BTC(43)
+  0x21e65c92023f994655191622d1c293f869b41715   WR=100.0% (37W/0L/40tot) avg_px=0.879 sell=23.8% days=10 T/day=5.2 XRP(37)+BTC(7)
+  0xe5d160b8b8b503cd04054d49a5e50d50f4c0e748   WR=100.0% (40W/0L/40tot) avg_px=0.892 sell=23.8% days=10 T/day=4.0 BTC(33)+ETH(7)
+  0x467afb18c5d818619d28cdf0c8cff9c6751bca0a   WR=100.0% (34W/0L/34tot) avg_px=0.888 sell=0.0% days=7 T/day=4.9 BTC(33)+XRP(1)
+  0x2fc515b1cd959828c5573ea5cb569e38e2e4c934   WR=99.2% (468W/4L/570tot) avg_px=0.868 sell=0.0% days=26 T/day=25.7 BTC(668)
+  0xb3f5146329500b504a3ed7f5e2569618aaa13328   WR=99.1% (809W/7L/984tot) avg_px=0.861 sell=0.0% days=31 T/day=37.2 BTC(582)+ETH(570)
+  0x086a56553154252917aeac164d7a92d25fb54d3f   WR=98.9% (262W/3L/300tot) avg_px=0.875 sell=0.0% days=30 T/day=11.5 BTC(344)
+  0x3ce6d3b4cff93dfbb55a32ab4e28f4b89256fe44   WR=98.7% (78W/1L/93tot) avg_px=0.877 sell=3.2% days=23 T/day=6.2 BTC(143)
+  0xc92399beab72a5709003c05a76ea8e007c5b4afd   WR=98.6% (72W/1L/113tot) avg_px=0.831 sell=1.9% days=9 T/day=33.4 ETH(148)+BTC(143)
+  0xb88c0402184f582e6614576b01011f4d0e567d3f   WR=98.6% (71W/1L/80tot) avg_px=0.879 sell=0.0% days=8 T/day=12.0 BTC(63)+ETH(30)
+  0x83bde01d89e6ee098808acd1e488464b1530b0e1   WR=98.5% (64W/1L/65tot) avg_px=0.870 sell=0.0% days=8 T/day=8.1 BTC(65)
+
+--- 5. INTERSECTION: STRONG IN BOTH WINDOWS ---
+Criteria: >=30 full, >=15 recent, WR>=65% in both, >=5 recent days
+  0x556a44ded4d53243b927371aa044b7e686ee4ac4   FULL: 100.0% (40W/0L/40tot) | RECENT: 100.0% (17W/0L/17tot) days=9 px=0.864 sell=37.7%
+  0xae315e76322f46fb4f2b0c3766294e403b4f846c   FULL: 100.0% (38W/0L/38tot) | RECENT: 100.0% (17W/0L/18tot) days=9 px=0.876 sell=40.7%
+  0x21e65c92023f994655191622d1c293f869b41715   FULL: 100.0% (32W/0L/33tot) | RECENT: 100.0% (37W/0L/40tot) days=10 px=0.879 sell=23.8%
+  0x8f22ea6025544f808e54e6fd8a34211d48f5ce7d   FULL: 98.8% (85W/1L/103tot) | RECENT: 100.0% (193W/0L/214tot) days=17 px=0.887 sell=0.0%
+  0xc92399beab72a5709003c05a76ea8e007c5b4afd   FULL: 100.0% (28W/0L/45tot) | RECENT: 98.6% (72W/1L/113tot) days=9 px=0.831 sell=1.9%
+  0xd36663c2bb3cb5f349cc2245f8afe87cf4801d9c   FULL: 99.3% (271W/2L/311tot) | RECENT: 98.4% (121W/2L/149tot) days=7 px=0.887 sell=0.0%
+  0xd2625b6709a6d0ff104ea15b8b9e2d82cfa68753   FULL: 97.2% (103W/3L/129tot) | RECENT: 100.0% (166W/0L/221tot) days=25 px=0.862 sell=0.0%
+  0xb88c0402184f582e6614576b01011f4d0e567d3f   FULL: 98.2% (110W/2L/117tot) | RECENT: 98.6% (71W/1L/80tot) days=8 px=0.879 sell=0.0%
+  0xb3f5146329500b504a3ed7f5e2569618aaa13328   FULL: 97.0% (423W/13L/516tot) | RECENT: 99.1% (809W/7L/984tot) days=31 px=0.861 sell=0.0%
+  0x2fc515b1cd959828c5573ea5cb569e38e2e4c934   FULL: 97.0% (225W/7L/276tot) | RECENT: 99.2% (468W/4L/570tot) days=26 px=0.868 sell=0.0%
+  0x3ce6d3b4cff93dfbb55a32ab4e28f4b89256fe44   FULL: 96.9% (31W/1L/36tot) | RECENT: 98.7% (78W/1L/93tot) days=23 px=0.877 sell=3.2%
+  0x9ce0cb7d0163551a7ad8cb5ffe1a821b54e9e9e8   FULL: 98.8% (83W/1L/108tot) | RECENT: 96.4% (189W/7L/233tot) days=13 px=0.854 sell=0.0%
+  0x6a085850bf9f3cbe13bd2abe0348349281557d86   FULL: 98.5% (67W/1L/98tot) | RECENT: 96.3% (181W/7L/241tot) days=18 px=0.831 sell=4.3%
+  0x7675a75acca8e9acef5dc6257f10659efa07159b   FULL: 97.3% (72W/2L/113tot) | RECENT: 97.4% (185W/5L/279tot) days=23 px=0.811 sell=0.9%
+  0x78c381f71bbcf5947d9ab2c92a35b0ed8a8e0873   FULL: 98.1% (104W/2L/207tot) | RECENT: 96.2% (330W/13L/612tot) days=16 px=0.693 sell=0.1%
+  0xe3ec77633bc7f2327b30dd8604e21ff6e9cb960b   FULL: 95.9% (70W/3L/82tot) | RECENT: 97.7% (213W/5L/250tot) days=12 px=0.864 sell=0.2%
+  0x70851c2c9520c65acc59eb844cce3babeccc894d   FULL: 96.0% (194W/8L/222tot) | RECENT: 96.8% (576W/19L/649tot) days=15 px=0.886 sell=0.5%
+  0x920e797d8d3e2e4029de1bb1483406c0f91a0155   FULL: 95.1% (176W/9L/242tot) | RECENT: 97.1% (234W/7L/366tot) days=27 px=0.803 sell=0.0%
+  0xc85adbdb0915c80e74acea732884f91be1ac899c   FULL: 91.3% (158W/15L/215tot) | RECENT: 100.0% (188W/0L/266tot) days=31 px=0.833 sell=0.0%
+  0x7b419e40638057b6896b3f76c5095264b5366676   FULL: 96.4% (27W/1L/30tot) | RECENT: 94.7% (54W/3L/64tot) days=9 px=0.866 sell=9.6%
+
+--- 6. HIGH-FREQUENCY SHORTLIST (>=3 T/day, >=15 mkts, WR>=60%) ---
+  0x1d0034134e339a309700ff2d34e99fa2d48b0313   WR=80.0% (64W/16L) T/day=3660.8 days=12 px=0.537 sell=0.0% BTC
+  0x1979ae6b7e6534de9c4539d0c205e582ca637c9d   WR=77.5% (69W/20L) T/day=3184.2 days=12 px=0.539 sell=0.0% BTC
+  0xa45fe11dd1420fca906ceac2c067844379a42429   WR=80.0% (8W/2L) T/day=2470.6 days=25 px=0.521 sell=0.0% ETH
+  0xe00740bce98a594e26861838885ab310ec3b548c   WR=90.1% (164W/18L) T/day=2286.2 days=30 px=0.591 sell=31.4% SOL
+  0x1f0ebc543b2d411f66947041625c0aa1ce61cf86   WR=73.3% (96W/35L) T/day=2228.3 days=20 px=0.543 sell=0.0% ETH
+  0xd1ebe815f921b3ebbd8d9e0a4192c6ab18360f5c   WR=77.3% (92W/27L) T/day=2173.6 days=20 px=0.538 sell=0.0% BTC
+  0x936027683753c01e2900f245c9db113421e48bc5   WR=61.3% (19W/12L) T/day=2158.0 days=23 px=0.508 sell=0.0% ETH
+  0x56bad0e7a00913c6e35c00dce3ec7f7cd6a311d7   WR=63.8% (83W/47L) T/day=2144.7 days=31 px=0.506 sell=0.0% ETH
+  0x6b1bdf3c115b85083dd41feae4daf7a634531923   WR=83.8% (67W/13L) T/day=2093.1 days=29 px=0.521 sell=0.0% SOL
+  0xdb86073bf86cc550bdf76e57a1db06d1815c1a3a   WR=100.0% (10W/0L) T/day=1890.8 days=6 px=0.545 sell=0.0% SOL
+  0xff9568c48f1ea7296a3c1f69a992b3d2127b131c   WR=92.8% (64W/5L) T/day=1757.6 days=7 px=0.724 sell=0.0% XRP
+  0x5fb40ca38e0dd2cc496ff1c2a1ccfacce9b16e19   WR=100.0% (1W/0L) T/day=1543.1 days=7 px=0.498 sell=0.0% ETH
+  0x576b0696fd5a9225d66fd9500fd98f5be10b0cab   WR=62.5% (5W/3L) T/day=1434.9 days=16 px=0.534 sell=0.0% ETH
+  0x732f189193d7a8c8bc8d8eb91f501a22736af081   WR=60.4% (125W/82L) T/day=1219.3 days=31 px=0.509 sell=0.0% ETH
+  0x818f214c7f3e479cce1d964d53fe3db7297558cb   WR=63.3% (112W/65L) T/day=1177.5 days=12 px=0.530 sell=0.0% XRP
+
+--- 7. RED-FLAG WALLETS (Top 10 Post-Res Bots / Market Makers) ---
+  0xe00740bce98a594e26861838885ab310ec3b548c   flags=['MARKET_MAKER'] avg_px=0.581 WR=92.0% (4501 mkts)
+  0x72406aaa0a5272c167c842e285568169097242f7   flags=['POST_RESOLUTION_BOT'] avg_px=0.962 WR=98.1% (3633 mkts)
+  0xda52aa724e14a8684df36883523ad32f476559d9   flags=['POST_RESOLUTION_BOT'] avg_px=0.959 WR=97.7% (3567 mkts)
+  0x1ff49fdcb6685c94059b65620f43a683be0ce7a5   flags=['MARKET_MAKER'] avg_px=0.497 WR=50.7% (2751 mkts)
+  0x1979c816c78ea2aaaec20854d087e85cd9a76fe7   flags=['POST_RESOLUTION_BOT'] avg_px=0.954 WR=96.9% (2709 mkts)
+  0x2ca680db50ca27e5d7f247011e079084ec38964b   flags=['POST_RESOLUTION_BOT'] avg_px=0.959 WR=97.8% (2405 mkts)
+  0x9f1559a62c95f7aef6f49f6126355bd41cfc7486   flags=['POST_RESOLUTION_BOT'] avg_px=0.974 WR=97.6% (2364 mkts)
+  0xd0d6053c3c37e727402d84c14069780d360993aa   flags=['MARKET_MAKER'] avg_px=0.422 WR=33.0% (2268 mkts)
+  0xdad18dbb5c7e45870174885e5345aa9d8f4ffc0f   flags=['POST_RESOLUTION_BOT'] avg_px=0.953 WR=96.9% (2240 mkts)
+  0x6031b6eed1c97e853c6e0f03ad3ce3529351f96d   flags=['MARKET_MAKER'] avg_px=0.514 WR=41.7% (2152 mkts)
+
+--- 8. SUMMARY ---
+  Markets scanned: Full=60134, Recent=13338
+  Markets analyzed: Full=6000, Recent=4000
+  Unique wallets: Full=118319, Recent=45851, Intersection=34909
+  Qualified (>=30 mkts, WR>=65%, no bad flags): Full=3513, Recent=2450
+  Intersection qualified (both windows): 942
+  Strict full shortlist (>=80 mkts, WR>=70%): 1250
+  Strict recent shortlist (>=30 mkts, WR>=70%): 1286
+  High-freq (>=3 T/day): 3090
+
+--- 9. LIMITATIONS & SAMPLING DISCLOSURE ---
+  Market fetching: All pages scanned (offset 120000-600000, step 500).
+  Sampling (full): Stratified sample of 6000 / 60134 markets (every 10.0th market chronologically)
+  Sampling (recent): Stratified sample of 4000 / 13338 markets (every 3.3th market chronologically)
+  Wallet ID: proxyWallet field from trades API (not raw EOA)
+  Outcome: determined from outcomePrices JSON field (price>=0.99 = winner)
+  WIN/LOSS: net buy position on winning vs losing token per market
+  MIXED positions (both sides bought) counted separately, excluded from WR numerator
+  Active days: based on trade timestamps
+  IMPORTANT: ALL crypto markets are hard-banned in copytrade bot config.
+  This analysis is informational only — no crypto trader can be added to bot.
+  Use this data for: edge verification, cross-market pattern detection,
+  understanding if crypto traders also bet on sports markets.
